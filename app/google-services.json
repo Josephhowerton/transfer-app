@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "753424081486",
+    "project_id": "transfertracker-6a04e",
+    "storage_bucket": "transfertracker-6a04e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753424081486:android:c8d83e144b55ea1510d91f",
+        "android_client_info": {
+          "package_name": "com.tranfers.transfertracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753424081486-85egamimo955qqgouk7um08kl1aq0nnv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB62CS7lpu8cWPk6uD2bFFwWQYE7cgEuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753424081486-85egamimo955qqgouk7um08kl1aq0nnv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

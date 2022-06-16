@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TransferTracker.Starting" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/Theme.TransferTracker</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_baseline_sports_soccer_24</item>
+    </style>
+</resources>

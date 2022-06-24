@@ -1,16 +1,16 @@
 package com.transfers.transfertracker.di.components
 
 import android.app.Application
-import com.transfers.transfertracker.di.modules.AppModule
-import com.transfers.transfertracker.di.modules.SubcomponentsModule
-import com.transfers.transfertracker.di.modules.ViewModelBuilderModule
+import com.transfers.transfertracker.di.modules.*
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [
-    AppModule::class,
+    AppModuleProvides::class,
+    AppModuleBinds::class,
+    UserModule::class,
     SubcomponentsModule::class,
     ViewModelBuilderModule::class
 ])

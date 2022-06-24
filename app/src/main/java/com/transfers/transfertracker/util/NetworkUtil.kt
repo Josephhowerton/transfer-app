@@ -1,4 +1,4 @@
-package com.transfers.util
+package com.transfers.transfertracker.util
 
 import retrofit2.HttpException
 import java.net.ConnectException

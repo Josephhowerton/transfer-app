@@ -23,6 +23,12 @@
 
         </activity>
 
+        <activity
+            android:label="@string/title_activity_main"
+            android:exported="true"
+            android:theme="@style/Theme.TransferTracker.Starting"
+            android:name=".view.main.MainActivity"/>
+
     </application>
 
 </manifest>

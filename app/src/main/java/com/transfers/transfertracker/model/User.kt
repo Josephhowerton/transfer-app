@@ -1,4 +1,3 @@
 package com.transfers.transfertracker.model
 
-class User(id: String) {
-}
+data class User(val id: String, val displayName: String, val email: String)

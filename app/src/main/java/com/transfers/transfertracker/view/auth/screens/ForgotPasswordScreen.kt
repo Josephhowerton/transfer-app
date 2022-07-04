@@ -1,28 +1,18 @@
 package com.transfers.transfertracker.view.auth.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavController
-import com.transfers.transfertracker.model.errors.ErrorTransformer
-import com.transfers.transfertracker.repo.impl.AuthRepositoryImpl
-import com.transfers.transfertracker.source.impl.AuthSourceImpl
-import com.transfers.transfertracker.source.impl.UserSourceImpl
 import com.transfers.transfertracker.view.auth.viewmodel.AuthViewModel
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
 

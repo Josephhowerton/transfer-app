@@ -78,7 +78,7 @@
     <string name="description_add">Add</string>
     <string name="content_description_team_logo">team logo</string>
     <string name="title_add_a_team">Add a Team</string>
-    
+
     <string name="title_activity_base_selection">BaseSelectionActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

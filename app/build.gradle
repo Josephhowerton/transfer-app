@@ -111,6 +111,11 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxkotlin:3.0.0'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha02"
+
+    //Glide
+    implementation "com.github.skydoves:landscapist-glide:1.5.2"
 }
 
 kapt {

@@ -12,6 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import com.transfers.transfertracker.R
@@ -85,15 +86,11 @@ class AuthActivity : ComponentActivity() {
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    val signInViewModel = SignInViewModel(AuthRepositoryImpl(UserSourceImpl(), AuthSourceImpl(ErrorTransformer())))
-//
-//    TransferTrackerTheme {
-//        SignInScreen(signInViewModel)
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    SignInScreen()
+}
 
 @Composable
 fun SignIn(viewModel: AuthViewModel, navController: NavHostController){

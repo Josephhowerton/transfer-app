@@ -1,6 +1,8 @@
 package com.transfers.transfertracker.view.auth.viewmodel
 
 import androidx.lifecycle.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.transfers.transfertracker.R
 import com.transfers.transfertracker.model.errors.AuthError
 import com.transfers.transfertracker.model.errors.AuthException
@@ -23,12 +25,6 @@ open class AuthViewModel @Inject constructor(private val repository: AuthReposit
     private val _result = MutableLiveData<BaseAuthResult>()
     val result: LiveData<BaseAuthResult> = _result
 
-    fun isUserLoggedIn() : Boolean = false
-
-    override fun subscribeOnLifecycle(disposable: Disposable){
-        compositeDisposable.add(disposable)
-    }
-
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
         compositeDisposable = CompositeDisposable()
@@ -38,6 +34,23 @@ open class AuthViewModel @Inject constructor(private val repository: AuthReposit
         super.onDestroy(owner)
         compositeDisposable.dispose()
     }
+
+    fun isUserLoggedIn() : Boolean = FirebaseAuth.getInstance().currentUser != null
+
+    override fun subscribeOnLifecycle(disposable: Disposable){
+        compositeDisposable.add(disposable)
+    }
+
+    fun validateSignIn(emailField: String, passwordField: String): Boolean = isEmailValid(emailField) && isPasswordValid(passwordField)
+
+    fun validateSignUp(nameField: String, emailField: String, passwordField: String): Boolean =
+        isNameValid(nameField) && isEmailValid(emailField) && isPasswordValid(passwordField)
+
+    fun isEmailValid(emailField: String): Boolean = emailField.isNotBlank() && emailField.contains("@") && emailField.contains(".")
+
+    private fun isNameValid(nameField: String) : Boolean = nameField.isNotBlank() && nameField.matches(Regex("[a-zA-Z]+"))
+
+    private fun isPasswordValid(password: String): Boolean = password.isNotBlank() && password.length > 5
 
     fun signIn(emailField: String, passwordField: String) {
         subscribeOnLifecycle(
@@ -93,17 +106,6 @@ open class AuthViewModel @Inject constructor(private val repository: AuthReposit
             )
         )
     }
-
-    fun validateSignIn(emailField: String, passwordField: String): Boolean = isEmailValid(emailField) && isPasswordValid(passwordField)
-
-    fun validateSignUp(nameField: String, emailField: String, passwordField: String): Boolean =
-        isNameValid(nameField) && isEmailValid(emailField) && isPasswordValid(passwordField)
-
-    fun isEmailValid(emailField: String): Boolean = emailField.isNotBlank() && emailField.contains("@") && emailField.contains(".")
-
-    private fun isNameValid(nameField: String) : Boolean = nameField.isNotBlank() && nameField.matches(Regex("[a-zA-Z]+"))
-
-    private fun isPasswordValid(password: String): Boolean = password.isNotBlank() && password.length > 5
 
     private fun handleAuthError(title: Int, baseResult: BaseResult.Error): BaseAuthResult {
         val exception = if(baseResult.exception is AuthException) {

@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
     @Preview(showBackground = true)
     @Composable
     fun DefaultPreview() {
-        TransferTrackerTheme {
+        TransferTrackerTheme() {
             Greeting()
         }
     }

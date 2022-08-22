@@ -18,8 +18,8 @@ import androidx.navigation.NavHostController
 import com.transfers.transfertracker.R
 import com.transfers.transfertracker.di.TransferApplication
 import com.transfers.transfertracker.di.factory.ViewModelFactory
-import com.transfers.transfertracker.model.result.AuthResultError
-import com.transfers.transfertracker.model.result.AuthResultSuccess
+import com.transfers.transfertracker.util.result.AuthResultError
+import com.transfers.transfertracker.util.result.AuthResultSuccess
 import com.transfers.transfertracker.view.auth.screens.ForgotPasswordScreen
 import com.transfers.transfertracker.view.auth.screens.SignInScreen
 import com.transfers.transfertracker.view.auth.screens.SignUpScreen
@@ -72,7 +72,6 @@ class AuthActivity : ComponentActivity() {
     private fun navigateToMain(){
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish()
     }
 
     private fun displayError(title: String, message: String){

@@ -1,7 +1,7 @@
 package com.transfers.transfertracker.repo
 
 import androidx.annotation.NonNull
-import com.transfers.transfertracker.model.result.BaseResult
+import com.transfers.transfertracker.util.result.BaseResult
 import io.reactivex.rxjava3.core.Single
 
 interface AuthRepository {

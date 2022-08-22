@@ -7,6 +7,5 @@ import dagger.Module
 
 @Module
 abstract class UserModule {
-    @Binds
-    abstract fun bindUserSource(authSource: UserSourceImpl) : UserSource
+
 }

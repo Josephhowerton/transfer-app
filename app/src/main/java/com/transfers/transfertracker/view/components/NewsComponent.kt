@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.skydoves.landscapist.glide.GlideImage
 import com.transfers.transfertracker.R
 import com.transfers.transfertracker.view.components.TeamItem
@@ -147,7 +148,9 @@ private fun NewsComponentScreen(modifier: Modifier) = TransferTrackerTheme {
 }
 
 @Composable
-fun NewsComponent(viewModel: DashboardViewModel, modifier: Modifier) = TransferTrackerTheme {
+fun NewsComponent(viewModel: DashboardViewModel,
+                  navController: NavController,
+                  modifier: Modifier) = TransferTrackerTheme {
     Card(shape = RoundedCornerShape(2), modifier = modifier.fillMaxWidth().height(450.dp)) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (descriptionText,
@@ -160,9 +163,22 @@ fun NewsComponent(viewModel: DashboardViewModel, modifier: Modifier) = TransferT
                 fifthTeam
             ) = createRefs()
 
-            GlideImage(imageModel = TODO("assign url"),
+//            GlideImage(imageModel = TODO("assign url"),
+//                contentDescription = "",
+//                modifier = Modifier.size(36.dp).padding(end = 2.dp)
+//                    .constrainAs(selectedTeamImage) {
+//                        start.linkTo(parent.start)
+//                        top.linkTo(selectedTeam.top)
+//                        bottom.linkTo(selectedTeam.bottom)
+//                        end.linkTo(selectedTeam.start)
+//                    }
+//            )
+
+            Image(painter = painterResource(id = R.drawable.ic_baseline_sports_soccer_24),
                 contentDescription = "",
-                modifier = Modifier.size(36.dp).padding(end = 2.dp)
+                modifier = Modifier
+                    .size(36.dp)
+                    .padding(end = 2.dp)
                     .constrainAs(selectedTeamImage) {
                         start.linkTo(parent.start)
                         top.linkTo(selectedTeam.top)
@@ -171,8 +187,7 @@ fun NewsComponent(viewModel: DashboardViewModel, modifier: Modifier) = TransferT
                     }
             )
 
-            TODO("format team name here!")
-            Text(text = "",
+            Text(text = "Team News",
                 fontSize = 32.sp,
                 modifier = Modifier
                     .padding(start = 2.dp)

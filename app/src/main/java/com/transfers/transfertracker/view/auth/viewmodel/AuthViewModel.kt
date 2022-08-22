@@ -2,16 +2,15 @@ package com.transfers.transfertracker.view.auth.viewmodel
 
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.transfers.transfertracker.R
-import com.transfers.transfertracker.model.errors.AuthError
-import com.transfers.transfertracker.model.errors.AuthException
-import com.transfers.transfertracker.model.result.AuthResultError
-import com.transfers.transfertracker.model.result.AuthResultSuccess
-import com.transfers.transfertracker.model.result.BaseAuthResult
-import com.transfers.transfertracker.model.result.BaseResult
+import com.transfers.transfertracker.util.errors.AuthError
+import com.transfers.transfertracker.util.result.AuthResultError
+import com.transfers.transfertracker.util.result.AuthResultSuccess
+import com.transfers.transfertracker.util.result.BaseAuthResult
+import com.transfers.transfertracker.util.result.BaseResult
 import com.transfers.transfertracker.repo.AuthRepository
 import com.transfers.transfertracker.util.SubscribeOnLifecycle
+import com.transfers.transfertracker.util.errors.AuthException
 import com.transfers.transfertracker.view.auth.AuthSuccessUserView
 import com.transfers.transfertracker.view.auth.ResetSuccessUserView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

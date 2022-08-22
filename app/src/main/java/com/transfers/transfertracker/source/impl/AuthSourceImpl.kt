@@ -3,13 +3,11 @@ package com.transfers.transfertracker.source.impl
 import androidx.annotation.NonNull
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.transfers.transfertracker.source.UserSource
-import com.transfers.transfertracker.model.User
-import com.transfers.transfertracker.model.errors.AuthError
-import com.transfers.transfertracker.model.errors.AuthException
-import com.transfers.transfertracker.model.errors.ErrorTransformer
-import com.transfers.transfertracker.model.result.BaseResult
+import com.transfers.transfertracker.util.errors.AuthError
+import com.transfers.transfertracker.util.errors.ErrorTransformer
+import com.transfers.transfertracker.util.result.BaseResult
 import com.transfers.transfertracker.source.AuthSource
+import com.transfers.transfertracker.util.errors.AuthException
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 

@@ -5,6 +5,10 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def apiKeyPropertiesFile = rootProject.file("apikeys.properties")
+def apiKeyProperties = new Properties()
+apiKeyProperties.load(new FileInputStream(apiKeyPropertiesFile))
+
 android {
     compileSdk 32
 
@@ -19,6 +23,12 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        buildConfigField("String", "NEWS_DATA_KEY", apiKeyProperties['NEWS_DATA_KEY'])
+        buildConfigField("String", "API_FOOTBALL_KEY", apiKeyProperties['API_FOOTBALL_KEY'])
+        buildConfigField("String", "API_FOOTBALL_HEADER", apiKeyProperties['API_FOOTBALL_HEADER'])
+        buildConfigField("String", "PERIGON_API_KEY", apiKeyProperties['PERIGON_API_KEY'])
+        buildConfigField("String", "PERIGON_HEADER", apiKeyProperties['PERIGON_HEADER'])
     }
 
     buildTypes {
@@ -113,9 +123,11 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
 
     implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha02"
+    implementation 'androidx.compose.runtime:runtime-livedata:1.0.0-beta01'
 
     //Glide
     implementation "com.github.skydoves:landscapist-glide:1.5.2"
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
 }
 
 kapt {

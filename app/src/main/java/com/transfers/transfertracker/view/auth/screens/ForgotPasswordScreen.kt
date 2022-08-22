@@ -30,7 +30,7 @@ fun ForgotPasswordScreen(viewModel: AuthViewModel) = TransferTrackerTheme {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (titleText, promptText, emailEditText, sendButton) = createRefs()
 
-        Text(text = "Sign In",
+        Text(text = "Forgot Password",
             fontSize = 24.sp,
             modifier = Modifier.constrainAs(titleText) {
                 top.linkTo(parent.top, margin = 150.dp)
@@ -38,7 +38,7 @@ fun ForgotPasswordScreen(viewModel: AuthViewModel) = TransferTrackerTheme {
             }
         )
 
-        Text(text = "Please sign in to continue",
+        Text(text = "Please enter your email to reset password",
             modifier = Modifier.constrainAs(promptText) {
                 top.linkTo(titleText.bottom, margin = 5.dp)
                 start.linkTo(titleText.start)

@@ -4,7 +4,7 @@ import androidx.annotation.NonNull
 import com.transfers.transfertracker.source.AuthSource
 import com.transfers.transfertracker.source.UserSource
 import com.transfers.transfertracker.model.User
-import com.transfers.transfertracker.model.result.BaseResult
+import com.transfers.transfertracker.util.result.BaseResult
 import com.transfers.transfertracker.repo.AuthRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single

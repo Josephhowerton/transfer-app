@@ -8,11 +8,12 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [
-    AppModuleProvides::class,
-    AppModuleBinds::class,
-    UserModule::class,
+    AppModule::class,
+    RepositoryModule::class,
     SubcomponentsModule::class,
-    ViewModelBuilderModule::class
+    ViewModelBuilderModule::class,
+    DataSourceModule::class,
+    NetworkModule::class
 ])
 interface AppComponent {
 
@@ -22,6 +23,6 @@ interface AppComponent {
     }
 
     fun authComponent(): AuthComponent.Factory
-
+    fun dashboardComponent(): DashboardComponent.Factory
 
 }

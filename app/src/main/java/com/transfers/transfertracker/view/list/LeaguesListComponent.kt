@@ -65,20 +65,19 @@ fun LeaguesListItemPreview() = Card(elevation = 0.dp) {
 }
 
 @Composable
-fun LeaguesList(navController: NavController, dashboardViewModel: DashboardViewModel) = TransferTrackerTheme {
+fun LeaguesList(dashboardViewModel: DashboardViewModel) = TransferTrackerTheme {
     val leagues by remember { mutableStateOf(dashboardViewModel.leaguesList) }
     LazyColumn(Modifier.fillMaxSize()) {
         items(leagues.size){ index ->
-            LeaguesListItem(navController, dashboardViewModel, leagues[index])
+            LeaguesListItem(dashboardViewModel, leagues[index])
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LeaguesListItem(navController: NavController, dashboardViewModel: DashboardViewModel, league: League) = Card(elevation = 0.dp, onClick = {
+fun LeaguesListItem(dashboardViewModel: DashboardViewModel, league: League) = Card(elevation = 0.dp, onClick = {
     dashboardViewModel.fetchTeamsByLeague(league)
-    navController.navigate(Screen.TEAM_LIST.name)
 }) {
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (leagueImage, leagueName) = createRefs()

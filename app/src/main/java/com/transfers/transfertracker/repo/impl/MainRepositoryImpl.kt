@@ -1,6 +1,5 @@
 package com.transfers.transfertracker.repo.impl
 
-import com.transfers.transfertracker.model.User
 import com.transfers.transfertracker.model.country.Country
 import com.transfers.transfertracker.model.league.League
 import com.transfers.transfertracker.model.news.NewsResponse
@@ -12,7 +11,6 @@ import com.transfers.transfertracker.source.*
 import com.transfers.transfertracker.util.result.BaseResult
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import kotlinx.coroutines.channels.ticker
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -62,6 +60,12 @@ class MainRepositoryImpl @Inject constructor(
         userSource.getUser()
             .flatMap{
                 userSource.saveSelectedTeam(it, team)
+            }
+
+    override fun getAllUsersTeam() : Single<List<Team>> =
+        userSource.getUser()
+            .flatMap{
+                userSource.getAllUsersTeam(it.id)
             }
 
     override fun getUserSelectedTeam(): Single<Team> = TODO()

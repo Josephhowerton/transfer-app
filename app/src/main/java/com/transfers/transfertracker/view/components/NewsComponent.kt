@@ -1,4 +1,4 @@
-package com.transfers.transfertracker.view.components.news
+package com.transfers.transfertracker.view.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,9 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.skydoves.landscapist.glide.GlideImage
 import com.transfers.transfertracker.R
-import com.transfers.transfertracker.view.components.TeamItem
 import com.transfers.transfertracker.view.main.viewmodel.DashboardViewModel
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
 
@@ -149,7 +147,6 @@ private fun NewsComponentScreen(modifier: Modifier) = TransferTrackerTheme {
 
 @Composable
 fun NewsComponent(viewModel: DashboardViewModel,
-                  navController: NavController,
                   modifier: Modifier) = TransferTrackerTheme {
     Card(shape = RoundedCornerShape(2), modifier = modifier.fillMaxWidth().height(450.dp)) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {

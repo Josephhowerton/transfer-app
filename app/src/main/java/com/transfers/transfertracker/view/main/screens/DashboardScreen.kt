@@ -1,7 +1,6 @@
 package com.transfers.transfertracker.view.main.screens
 
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -13,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.transfers.transfertracker.view.components.*
-import com.transfers.transfertracker.view.components.news.NewsComponent
+import com.transfers.transfertracker.view.components.NewsComponent
 import com.transfers.transfertracker.view.main.viewmodel.DashboardViewModel
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
 
@@ -64,8 +63,7 @@ fun DashboardScreen() = TransferTrackerTheme {
 }
 
 @Composable
-fun Dashboard(dashboardViewModel: DashboardViewModel,
-              navController: NavController) = TransferTrackerTheme {
+fun Dashboard(dashboardViewModel: DashboardViewModel) = TransferTrackerTheme {
     ConstraintLayout(
         Modifier.verticalScroll(
             state = rememberScrollState(),
@@ -75,7 +73,6 @@ fun Dashboard(dashboardViewModel: DashboardViewModel,
 
         TeamsComponent(
             dashboardViewModel,
-            navController,
             Modifier
                 .padding(bottom = 5.dp)
                 .padding(bottom = 50.dp)
@@ -86,7 +83,6 @@ fun Dashboard(dashboardViewModel: DashboardViewModel,
 
         NewsComponent(
             dashboardViewModel,
-            navController,
             Modifier
                 .padding(bottom = 5.dp)
                 .padding(bottom = 50.dp)
@@ -97,7 +93,6 @@ fun Dashboard(dashboardViewModel: DashboardViewModel,
 
         PlayerComponent(
             dashboardViewModel,
-            navController,
             Modifier.padding(bottom = 5.dp)
                 .padding(bottom = 50.dp)
                 .constrainAs(players) {
@@ -107,7 +102,6 @@ fun Dashboard(dashboardViewModel: DashboardViewModel,
 
         StatisticsComponent(
             dashboardViewModel,
-            navController,
             Modifier
                 .padding(bottom = 5.dp)
                 .padding(bottom = 50.dp)

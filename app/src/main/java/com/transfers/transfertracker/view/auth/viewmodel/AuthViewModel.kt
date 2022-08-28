@@ -18,7 +18,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
-open class AuthViewModel @Inject constructor(private val repository: AuthRepository): ViewModel(), DefaultLifecycleObserver, SubscribeOnLifecycle {
+open class AuthViewModel @Inject constructor(private val repository: AuthRepository): ViewModel(), DefaultLifecycleObserver, SubscribeOnLifecycle{
     private lateinit var compositeDisposable: CompositeDisposable
 
     private val _result = MutableLiveData<BaseAuthResult>()

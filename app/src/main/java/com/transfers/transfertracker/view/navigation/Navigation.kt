@@ -1,6 +1,7 @@
 package com.transfers.transfertracker.view.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,6 +22,8 @@ import com.transfers.transfertracker.view.player.PlayerDetail
 import com.transfers.transfertracker.view.player.PlayerDetailViewModel
 import com.transfers.transfertracker.view.stats.InDepthStatistics
 import com.transfers.transfertracker.view.stats.TeamStatistics
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun AuthNavGraph(navController: NavHostController = rememberNavController(), viewModel: AuthViewModel) {
@@ -32,17 +35,25 @@ fun AuthNavGraph(navController: NavHostController = rememberNavController(), vie
 }
 
 @Composable
-fun DashboardNavGraph(navController: NavHostController = rememberNavController(), viewModel: DashboardViewModel) {
+fun DashboardNavGraph(navController: NavHostController = rememberNavController(),
+                      navigator: Navigator,
+                      viewModel: DashboardViewModel) {
+    LaunchedEffect("navigation") {
+        navigator.sharedFlow.onEach {
+            navController.navigate(it.name)
+        }.launchIn(this)
+    }
+
     NavHost(navController = navController, startDestination = Screen.DASHBOARD.name) {
-        composable(Screen.DASHBOARD.name) { Dashboard(viewModel, navController) }
-        composable(Screen.PLAYER_DETAILS.name) { PlayerDetail(viewModel, navController) }
-        composable(Screen.COUNTRY_LIST.name) { CountryList(navController = navController, dashboardViewModel = viewModel) }
-        composable(Screen.LEAGUE_LIST.name) { LeaguesList(navController = navController, dashboardViewModel = viewModel) }
-        composable(Screen.TEAM_LIST.name) { TeamsList(navController = navController, dashboardViewModel = viewModel) }
-        composable(Screen.DASHBOARD.name) { Dashboard(viewModel, navController) }
-        composable(Screen.PLAYER_LIST.name) { PlayersList(navController) }
-        composable(Screen.PLAYER_DETAILS.name) { PlayerDetail(viewModel, navController) }
-        composable(Screen.TEAM_STATISTICS.name) { TeamStatistics(viewModel, navController) }
-        composable(Screen.STATISTIC_DETAILS.name) { InDepthStatistics(viewModel, navController) }
+        composable(Screen.DASHBOARD.name) { Dashboard(viewModel) }
+        composable(Screen.PLAYER_DETAILS.name) { PlayerDetail(viewModel) }
+        composable(Screen.COUNTRY_LIST.name) { CountryList(dashboardViewModel = viewModel) }
+        composable(Screen.LEAGUE_LIST.name) { LeaguesList(dashboardViewModel = viewModel) }
+        composable(Screen.TEAM_LIST.name) { TeamsList(dashboardViewModel = viewModel) }
+        composable(Screen.DASHBOARD.name) { Dashboard(viewModel) }
+        composable(Screen.PLAYER_LIST.name) { PlayersList() }
+        composable(Screen.PLAYER_DETAILS.name) { PlayerDetail(viewModel) }
+        composable(Screen.TEAM_STATISTICS.name) { TeamStatistics(viewModel) }
+        composable(Screen.STATISTIC_DETAILS.name) { InDepthStatistics(viewModel) }
     }
 }

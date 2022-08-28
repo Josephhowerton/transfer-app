@@ -19,24 +19,18 @@ class UserSourceImpl @Inject constructor(): UserSource {
 
     override fun getUser(): Single<User> =
         Single.create { emitter ->
-            val user = FirebaseAuth.getInstance().currentUser
-            if(user == null) {
-                emitter.onError(Throwable())
-            }
-            else{
+            user?.let { fbUser ->
                 FirebaseFirestore.getInstance()
                     .collection(Collections.Users.name)
-                    .document().get()
+                    .document(fbUser.uid).get()
                     .addOnCanceledListener { emitter.onError( FBException(FBError.ERROR_CLIENT_CANCELED) ) }
                     .addOnFailureListener { emitter.onError( it ) }
-                    .addOnSuccessListener {
-                        val user = it.toObject(User::class.java)
-                        if(user != null){
-                            emitter.onSuccess(user)
-                        }
+                    .addOnSuccessListener { document ->
+                        document.toObject(User::class.java)?.let {
+                            emitter.onSuccess(it)
+                        } ?: emitter.onError(FBException(FBError.ERROR_CONVERSION))
                     }
-            }
-
+            } ?: emitter.onError(Throwable())
         }
 
     override fun createUser(user: User): Single<BaseResult<Boolean>> =
@@ -57,6 +51,21 @@ class UserSourceImpl @Inject constructor(): UserSource {
                 .addOnFailureListener { emitter.onError( it ) }
                 .addOnCanceledListener { emitter.onError( FBException(FBError.ERROR_CLIENT_CANCELED) ) }
                 .addOnSuccessListener { emitter.onSuccess(BaseResult.Success(true)) }
+        }
+
+    override fun getAllUsersTeam(uid: String): Single<List<Team>> =
+        Single.create { emitter ->
+            FirebaseFirestore.getInstance()
+                .collection(Collections.Users.name)
+                .document(uid)
+                .collection(Collections.Teams.name).get()
+                .addOnFailureListener { emitter.onError( it ) }
+                .addOnCanceledListener { emitter.onError( FBException(FBError.ERROR_CLIENT_CANCELED) ) }
+                .addOnSuccessListener { collection ->
+                    collection.toObjects(Team::class.java).let {
+                        emitter.onSuccess(it)
+                    }
+                }
         }
 
     override fun saveSelectedTeam(user: User, team: Team): Single<BaseResult<Boolean>> =

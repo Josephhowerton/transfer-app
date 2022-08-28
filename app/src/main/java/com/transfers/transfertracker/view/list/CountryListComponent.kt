@@ -1,6 +1,5 @@
 package com.transfers.transfertracker.view.list
 
-import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,22 +10,20 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.transfers.transfertracker.R
-import com.transfers.transfertracker.enums.Screen
 import com.transfers.transfertracker.model.country.Country
 import com.transfers.transfertracker.view.main.viewmodel.DashboardViewModel
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
@@ -70,22 +67,20 @@ fun CountryListItemPreview() = Card(elevation = 0.dp) {
 }
 
 @Composable
-fun CountryList(navController: NavHostController, dashboardViewModel: DashboardViewModel) = TransferTrackerTheme {
-    dashboardViewModel.fetchCountries()
+fun CountryList(dashboardViewModel: DashboardViewModel) = TransferTrackerTheme {
     val countries by remember { mutableStateOf(dashboardViewModel.countriesList) }
     LazyColumn(Modifier.fillMaxSize()) {
         items(countries.size) { index ->
-            CountryListItem(dashboardViewModel, navController, countries[index])
+            CountryListItem(dashboardViewModel, countries[index])
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CountryListItem(viewModel: DashboardViewModel, navController: NavHostController, country: Country) =
+fun CountryListItem(viewModel: DashboardViewModel, country: Country) =
     Card(elevation = 0.dp, onClick = {
         viewModel.fetchLeaguesByCountry(country)
-        navController.navigate(Screen.LEAGUE_LIST.name)
     }) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (flag, name) = createRefs()

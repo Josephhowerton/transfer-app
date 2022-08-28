@@ -25,5 +25,6 @@ interface MainRepository {
     fun fetchTeams(id: Int) : Single<List<Team>>
     fun saveSelectedTeam(team: Team): Single<BaseResult<Boolean>>
     fun getUserSelectedTeam(): Single<Team>
+    fun getAllUsersTeam() : Single<List<Team>>
     fun updateSelectedTeam()
 }

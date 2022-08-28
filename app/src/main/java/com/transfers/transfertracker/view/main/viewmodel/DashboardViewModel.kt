@@ -1,10 +1,7 @@
 package com.transfers.transfertracker.view.main.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,15 +13,14 @@ import com.transfers.transfertracker.model.teams.Team
 import com.transfers.transfertracker.repo.MainRepository
 import com.transfers.transfertracker.source.AuthSource
 import com.transfers.transfertracker.util.result.BaseResult
+import com.transfers.transfertracker.view.navigation.DashboardNavGraph
+import com.transfers.transfertracker.view.navigation.Navigator
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class DashboardViewModel @Inject constructor(private val repository: MainRepository,
-                                             private val authSource: AuthSource)
-    : ViewModel() {
-
-    private val _signOutMutableBoolean: MutableLiveData<BaseResult<Boolean>> = MutableLiveData()
-    private val signOutBoolean: LiveData<BaseResult<Boolean>> get() = _signOutMutableBoolean
+                                             private val navigator: Navigator,
+                                             private val authSource: AuthSource) : ViewModel() {
 
     private val _countriesList = mutableStateListOf<Country>()
     val countriesList: List<Country> get() = _countriesList
@@ -35,14 +31,11 @@ class DashboardViewModel @Inject constructor(private val repository: MainReposit
     private val _teamsList = mutableStateListOf<Team>()
     val teamsList: List<Team> get() = _teamsList
 
-    private val _wasTeamSaved = MutableLiveData<BaseResult<Boolean>>()
-    val wasTeamSaved: LiveData<BaseResult<Boolean>> get() = _wasTeamSaved
+    private val _usersTeams = mutableStateListOf<Team>()
+    val usersTeams: List<Team> get() = _usersTeams
 
-    private val _screen = MutableLiveData<Screen>()
-    val screen: LiveData<Screen> get() = _screen
-
-    fun setScreen(screen: Screen) {
-        _screen.value = screen
+    init {
+        getAllUsersTeams()
     }
 
     fun fetchCountries() {
@@ -51,6 +44,7 @@ class DashboardViewModel @Inject constructor(private val repository: MainReposit
                 {
                     _countriesList.clear()
                     _countriesList.addAll(it)
+                    navigator.navigateTo(Screen.COUNTRY_LIST)
                 },
                 {
                     Log.println(Log.ASSERT, "DashboardViewModel", it.toString())
@@ -64,6 +58,7 @@ class DashboardViewModel @Inject constructor(private val repository: MainReposit
                 {
                     _leaguesList.clear()
                     _leaguesList.addAll(it)
+                    navigator.navigateTo(Screen.LEAGUE_LIST)
                 },
                 {
                     Log.println(Log.ASSERT, "DashboardViewModel", it.toString())
@@ -77,6 +72,7 @@ class DashboardViewModel @Inject constructor(private val repository: MainReposit
                 {
                     _teamsList.clear()
                     _teamsList.addAll(it)
+                    navigator.navigateTo(Screen.TEAM_LIST)
                 },
                 {
                     Log.println(Log.ASSERT, "DashboardViewModel", it.toString())
@@ -84,16 +80,33 @@ class DashboardViewModel @Inject constructor(private val repository: MainReposit
         )
     }
 
-    fun saveSelectedTeam(team: Team) {
-        repository.saveSelectedTeam(team)
+    fun getAllUsersTeams() {
+        repository.getAllUsersTeam()
             .subscribe(
                 {
-                    _wasTeamSaved.value = it
+                    _usersTeams.clear()
+                    _usersTeams.addAll(it)
                 },
                 {
                     Log.println(Log.ASSERT, "DashboardViewModel", it.toString())
                 }
             )
+    }
+
+    fun saveSelectedTeam(team: Team) {
+        repository.saveSelectedTeam(team)
+            .subscribe(
+                {
+                    navigator.navigateTo(Screen.DASHBOARD)
+                },
+                {
+                    Log.println(Log.ASSERT, "DashboardViewModel", it.toString())
+                }
+            )
+    }
+
+    fun setTeamAsPrimary() {
+
     }
 
     fun fetchTeams(uid: String): List<Team> {
@@ -116,6 +129,6 @@ class DashboardViewModel @Inject constructor(private val repository: MainReposit
         authSource.signOut()
             .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ _signOutMutableBoolean.value = BaseResult.Success(it) }, {})
+            .subscribe({ }, {})
     }
 }

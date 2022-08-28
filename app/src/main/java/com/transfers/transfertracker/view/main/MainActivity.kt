@@ -25,6 +25,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var navigator: Navigator
 
     private val dashboardViewModel by viewModels<DashboardViewModel> { viewModelFactory }
 
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TransferTrackerTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    DashboardNavGraph(viewModel = dashboardViewModel)
+                    DashboardNavGraph(viewModel = dashboardViewModel, navigator = navigator)
                 }
             }
         }

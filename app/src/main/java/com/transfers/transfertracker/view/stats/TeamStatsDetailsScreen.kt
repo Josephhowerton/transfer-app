@@ -19,7 +19,7 @@ import com.transfers.transfertracker.view.main.viewmodel.DashboardViewModel
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
 
 @Composable
-fun InDepthStatistics(viewModel: DashboardViewModel, navController: NavController) = TransferTrackerTheme {
+fun InDepthStatistics(viewModel: DashboardViewModel) = TransferTrackerTheme {
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (playerImage, playersNameText, birthplaceText, countryFlagImage) = createRefs()

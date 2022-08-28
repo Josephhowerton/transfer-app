@@ -18,6 +18,7 @@ enum class AuthError {
 }
 
 enum class FBError {
+    ERROR_CONVERSION,
     ERROR_UNKNOWN,
     ERROR_INTERNET_CONNECTION,
     ERROR_INTERNAL_ERROR,

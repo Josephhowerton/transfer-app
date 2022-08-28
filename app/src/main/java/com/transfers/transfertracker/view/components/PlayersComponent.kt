@@ -20,10 +20,44 @@ import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.skydoves.landscapist.glide.GlideImage
 import com.transfers.transfertracker.R
 import com.transfers.transfertracker.enums.Screen
+import com.transfers.transfertracker.model.player.Player
 import com.transfers.transfertracker.view.main.viewmodel.DashboardViewModel
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun PlayerItem(player: Player,
+               viewModel: DashboardViewModel,
+               modifier: Modifier) =
+    Card(elevation = 0.dp, modifier = modifier, onClick = { }) {
+        ConstraintLayout(modifier = Modifier
+            .fillMaxWidth()) {
+            val (crest, name) = createRefs()
+            GlideImage(imageModel = player.photo,
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(end = 5.dp, start = 5.dp, top = 15.dp, bottom = 15.dp)
+                    .constrainAs(crest) {
+                        start.linkTo(parent.start)
+                        top.linkTo(name.top)
+                        bottom.linkTo(name.bottom)
+                    }
+            )
+
+            Text(text = player.name,
+                fontSize = 24.sp,
+                modifier = Modifier
+                    .padding(end = 5.dp, start = 5.dp, top = 15.dp, bottom = 15.dp)
+                    .constrainAs(name) {
+                        top.linkTo(parent.top)
+                        start.linkTo(crest.end)
+                    }
+            )
+        }
+    }
 
 @Preview(showBackground = true)
 @Composable
@@ -148,7 +182,6 @@ fun PlayerComponentScreen(modifier: Modifier) = TransferTrackerTheme {
 
 @Composable
 fun PlayerComponent(viewModel: DashboardViewModel,
-                    navController: NavController,
                     modifier: Modifier) = TransferTrackerTheme {
     Card(shape = RoundedCornerShape(2),
         modifier = modifier
@@ -200,7 +233,6 @@ fun PlayerComponent(viewModel: DashboardViewModel,
             )
 
             PlayerItem(
-                navController,
                 playerName = "Player 1",
                 playerImageUrl = "",
                 modifier = Modifier
@@ -213,7 +245,6 @@ fun PlayerComponent(viewModel: DashboardViewModel,
             )
 
             PlayerItem(
-                navController,
                 playerName = "Player 2",
                 playerImageUrl = "",
                 modifier = Modifier
@@ -226,7 +257,6 @@ fun PlayerComponent(viewModel: DashboardViewModel,
             )
 
             PlayerItem(
-                navController,
                 playerName = "Player 3",
                 playerImageUrl = "",
                 modifier = Modifier
@@ -239,7 +269,6 @@ fun PlayerComponent(viewModel: DashboardViewModel,
             )
 
             PlayerItem(
-                navController,
                 playerName = "Player 4",
                 playerImageUrl = "",
                 modifier = Modifier
@@ -251,7 +280,7 @@ fun PlayerComponent(viewModel: DashboardViewModel,
                     }
             )
 
-            ClickableText(onClick = { navController.navigate(Screen.PLAYER_LIST.name) }, text = AnnotatedString("All Players"),
+            ClickableText(onClick = { }, text = AnnotatedString("All Players"),
                 style = TextStyle(
                     color = Color.Blue,
                     fontSize = 20.sp
@@ -271,39 +300,6 @@ fun PlayerComponent(viewModel: DashboardViewModel,
 fun PlayerItem(playerName: String,
                playerImageUrl: String,
                modifier: Modifier) = Card(elevation = 0.dp, modifier = modifier) {
-        ConstraintLayout(modifier = Modifier
-            .fillMaxWidth()) {
-            val (crest, name) = createRefs()
-            Image(painter = painterResource(id = R.drawable.ic_baseline_sports_soccer_24),
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(end = 5.dp, start = 5.dp, top = 15.dp, bottom = 15.dp)
-                    .constrainAs(crest) {
-                        start.linkTo(parent.start)
-                        top.linkTo(name.top)
-                        bottom.linkTo(name.bottom)
-                    }
-            )
-
-            Text(text = playerName,
-                fontSize = 24.sp,
-                modifier = Modifier
-                    .padding(end = 5.dp, start = 5.dp, top = 15.dp, bottom = 15.dp)
-                    .constrainAs(name) {
-                        top.linkTo(parent.top)
-                        start.linkTo(crest.end)
-                    }
-            )
-        }
-    }
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun PlayerItem(navController: NavController,
-               playerName: String,
-               playerImageUrl: String,
-               modifier: Modifier) =
-    Card(elevation = 0.dp, modifier = modifier, onClick = { navController.navigate(Screen.PLAYER_DETAILS.name) }) {
         ConstraintLayout(modifier = Modifier
             .fillMaxWidth()) {
             val (crest, name) = createRefs()

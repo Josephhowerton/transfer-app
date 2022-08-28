@@ -1,12 +1,12 @@
 package com.transfers.transfertracker.model.teams
 
 data class Team(
-    val id: Int,
-    var leagueId: Int?,
-    val logo: String,
-    val name: String,
-    var code: String?,
-    var country: String?,
-    var founded: Int?,
-    var national: Boolean?
+    var id: Int = -1,
+    var leagueId: Int? = -1,
+    var logo: String = "",
+    var name: String = "",
+    var code: String? = "",
+    var country: String? = "",
+    var founded: Int? = -1,
+    var national: Boolean? = false
 )

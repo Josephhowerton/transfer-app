@@ -8,6 +8,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -20,6 +21,7 @@ import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.skydoves.landscapist.glide.GlideImage
 import com.transfers.transfertracker.R
 import com.transfers.transfertracker.enums.Screen
 import com.transfers.transfertracker.view.main.viewmodel.DashboardViewModel
@@ -147,13 +149,15 @@ fun TeamsComponentScreen(modifier: Modifier) = TransferTrackerTheme {
 }
 
 @Composable
-fun TeamsComponent(viewModel: DashboardViewModel,
-                   navController: NavController,
-                   modifier: Modifier) = TransferTrackerTheme {
+fun TeamsComponent(viewModel: DashboardViewModel, modifier: Modifier) = TransferTrackerTheme {
     Card(shape = RoundedCornerShape(2),
         modifier = modifier
             .fillMaxWidth()
             .height(450.dp)) {
+        val teams = remember {
+            viewModel.usersTeams
+        }
+
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (descriptionText,
                 addATeamText,
@@ -199,59 +203,79 @@ fun TeamsComponent(viewModel: DashboardViewModel,
                 }
             )
 
-            TeamItem(
-                navController = navController,
-                teamName = "Team 1",
-                crestUrl = "",
-                modifier = Modifier
-                    .padding(10.dp)
-                    .wrapContentSize()
-                    .constrainAs(secondTeam) {
-                        top.linkTo(descriptionText.bottom)
-                        bottom.linkTo(thirdTeam.top)
-                    }
-            )
+            (teams.isNotEmpty()).let {
+                if(it){
+                    val team = teams[0]
+                    TeamItem(
+                        viewModel = viewModel,
+                        teamName = team.name,
+                        crestUrl = team.logo,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .wrapContentSize()
+                            .constrainAs(secondTeam) {
+                                top.linkTo(descriptionText.bottom)
+                                bottom.linkTo(thirdTeam.top)
+                            }
+                    )
+                }
+            }
 
-            TeamItem(
-                navController = navController,
-                teamName = "Team 2",
-                crestUrl = "",
-                modifier = Modifier
-                    .padding(10.dp)
-                    .wrapContentSize()
-                    .constrainAs(thirdTeam) {
-                        top.linkTo(secondTeam.bottom)
-                        bottom.linkTo(fourthTeam.top)
-                    }
-            )
+            (teams.size >= 2).let {
+                if(it){
+                    val team = teams[1]
+                    TeamItem(
+                        viewModel = viewModel,
+                        teamName = team.name,
+                        crestUrl = team.logo,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .wrapContentSize()
+                            .constrainAs(fourthTeam) {
+                                top.linkTo(descriptionText.bottom)
+                                bottom.linkTo(thirdTeam.top)
+                            }
+                    )
+                }
+            }
 
-            TeamItem(
-                navController = navController,
-                teamName = "Team 3",
-                crestUrl = "",
-                modifier = Modifier
-                    .padding(10.dp)
-                    .wrapContentSize()
-                    .constrainAs(fourthTeam) {
-                        top.linkTo(thirdTeam.bottom)
-                        bottom.linkTo(fifthTeam.top)
-                    }
-            )
+            (teams.size >= 3).let {
+                if(it){
+                    val team = teams[2]
+                    TeamItem(
+                        viewModel = viewModel,
+                        teamName = team.name,
+                        crestUrl = team.logo,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .wrapContentSize()
+                            .constrainAs(fifthTeam) {
+                                top.linkTo(descriptionText.bottom)
+                                bottom.linkTo(thirdTeam.top)
+                            }
+                    )
+                }
+            }
 
-            TeamItem(
-                navController = navController,
-                teamName = "Team 4",
-                crestUrl = "",
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth()
-                    .constrainAs(fifthTeam) {
-                        top.linkTo(fourthTeam.bottom)
-                        bottom.linkTo(addATeamText.top)
-                    }
-            )
+            (teams.size >= 4).let {
+                if(it){
+                    val team = teams[3]
+                    TeamItem(
+                        viewModel = viewModel,
+                        teamName = team.name,
+                        crestUrl = team.logo,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .wrapContentSize()
+                            .constrainAs(secondTeam) {
+                                top.linkTo(descriptionText.bottom)
+                                bottom.linkTo(thirdTeam.top)
+                            }
+                    )
+                }
+            }
 
-            ClickableText(onClick = { navController.navigate(Screen.COUNTRY_LIST.name) }, text = AnnotatedString("Add Team"),
+            ClickableText(onClick = { viewModel.fetchCountries() }, text = AnnotatedString("Add Team"),
                 style = TextStyle(
                     color = Color.Blue,
                     fontSize = 20.sp
@@ -269,14 +293,15 @@ fun TeamsComponent(viewModel: DashboardViewModel,
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TeamItem(navController: NavController, teamName: String, crestUrl: String, modifier: Modifier) =
-    Card(elevation = 0.dp, modifier = modifier, onClick = { navController.navigate(Screen.PLAYER_DETAILS.name) }) {
+fun TeamItem(viewModel: DashboardViewModel, teamName: String, crestUrl: String, modifier: Modifier) =
+    Card(elevation = 0.dp, modifier = modifier, onClick = { viewModel.setTeamAsPrimary() }) {
         ConstraintLayout(modifier = Modifier
             .fillMaxWidth()) {
             val (crest, name) = createRefs()
-            Image(painter = painterResource(id = R.drawable.ic_baseline_sports_soccer_24),
+            GlideImage(imageModel = crestUrl,
                 contentDescription = "",
                 modifier = Modifier
+                    .size(70.dp)
                     .padding(end = 5.dp, start = 5.dp, top = 15.dp, bottom = 15.dp)
                     .constrainAs(crest) {
                         start.linkTo(parent.start)

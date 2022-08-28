@@ -147,7 +147,6 @@ fun StatisticsComponentScreen(modifier: Modifier) = TransferTrackerTheme {
 
 @Composable
 fun StatisticsComponent(dashboardViewModel: DashboardViewModel,
-                        navController: NavController,
                         modifier: Modifier) = TransferTrackerTheme {
     Card(shape = RoundedCornerShape(2),
         modifier = modifier
@@ -199,7 +198,6 @@ fun StatisticsComponent(dashboardViewModel: DashboardViewModel,
             )
 
             StatisticsItem(
-                navController = navController,
                 stat = "Stat 1",
                 value = "Value 1",
                 modifier = Modifier
@@ -212,7 +210,6 @@ fun StatisticsComponent(dashboardViewModel: DashboardViewModel,
             )
 
             StatisticsItem(
-                navController = navController,
                 stat = "Stat 2",
                 value = "Value 2",
                 modifier = Modifier
@@ -225,7 +222,6 @@ fun StatisticsComponent(dashboardViewModel: DashboardViewModel,
             )
 
             StatisticsItem(
-                navController = navController,
                 stat = "Stat 3",
                 value = "Value 3",
                 modifier = Modifier
@@ -238,7 +234,6 @@ fun StatisticsComponent(dashboardViewModel: DashboardViewModel,
             )
 
             StatisticsItem(
-                navController = navController,
                 stat = "Stat 4",
                 value = "Value 4",
                 modifier = Modifier
@@ -250,7 +245,7 @@ fun StatisticsComponent(dashboardViewModel: DashboardViewModel,
                     }
             )
 
-            ClickableText(onClick = {navController.navigate(Screen.TEAM_STATISTICS.name)}, text = AnnotatedString("More"),
+            ClickableText(onClick = { }, text = AnnotatedString("More"),
                 style = TextStyle(
                     color = Color.Blue,
                     fontSize = 20.sp
@@ -300,11 +295,11 @@ fun StatisticsItem(stat: String, value: String, modifier: Modifier) =
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun StatisticsItem(navController: NavController,
-                   stat: String,
+fun StatisticsItem(stat: String,
                    value: String,
+                   viewModel: DashboardViewModel,
                    modifier: Modifier) =
-    Card(elevation = 0.dp, modifier = modifier, onClick = {navController.navigate(Screen.STATISTIC_DETAILS.name)}) {
+    Card(elevation = 0.dp, modifier = modifier, onClick = { }) {
         ConstraintLayout(modifier = Modifier
             .fillMaxWidth()) {
             val (statText, valueText) = createRefs()

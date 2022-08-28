@@ -65,18 +65,18 @@ fun TeamsListItemPreview() = Card(elevation = 0.dp) {
 }
 
 @Composable
-fun TeamsList(navController: NavController, dashboardViewModel: DashboardViewModel) = TransferTrackerTheme {
+fun TeamsList(dashboardViewModel: DashboardViewModel) = TransferTrackerTheme {
     val teams by remember { mutableStateOf(dashboardViewModel.teamsList) }
     LazyColumn(Modifier.fillMaxSize()) {
         items(teams.size){ index ->
-            TeamsListItem(navController, dashboardViewModel, teams[index])
+            TeamsListItem(dashboardViewModel, teams[index])
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TeamsListItem(navController: NavController, dashboardViewModel: DashboardViewModel, team: Team) = Card(elevation = 0.dp,
+fun TeamsListItem(dashboardViewModel: DashboardViewModel, team: Team) = Card(elevation = 0.dp,
     onClick = { dashboardViewModel.saveSelectedTeam(team) }
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {

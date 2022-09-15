@@ -16,7 +16,7 @@ data class User constructor(
     @set: PropertyName("email")
     var email: String = "",
 
-    @get: PropertyName("Teams")
-    @set: PropertyName("Teams")
-    var teams: List<Team>? = null
-    )
+    @get: PropertyName("current_team")
+    @set: PropertyName("current_team")
+    var currentTeam: String = ""
+)

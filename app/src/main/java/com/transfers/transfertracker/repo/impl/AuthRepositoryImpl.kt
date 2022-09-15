@@ -1,6 +1,7 @@
 package com.transfers.transfertracker.repo.impl
 
 import androidx.annotation.NonNull
+import com.google.firebase.auth.FirebaseAuth
 import com.transfers.transfertracker.source.AuthSource
 import com.transfers.transfertracker.source.UserSource
 import com.transfers.transfertracker.model.User
@@ -15,6 +16,13 @@ class AuthRepositoryImpl @Inject constructor(private val userSource: UserSource,
     : AuthRepository {
 
     override fun signOut() { authSource.signOut() }
+
+    override fun isUserLoggedIn(): Single<BaseResult<Boolean>> =
+        Single.create {
+            FirebaseAuth.getInstance().currentUser?.let {
+
+            }
+        }
 
     override fun signUp(@NonNull displayName: String, @NonNull email: String, @NonNull password: String): Single<BaseResult<Boolean>> =
         authSource.signUp(displayName, email, password)

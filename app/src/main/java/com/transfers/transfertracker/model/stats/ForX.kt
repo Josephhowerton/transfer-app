@@ -1,7 +1,7 @@
 package com.transfers.transfertracker.model.stats
 
 data class ForX(
-    val average: AverageX,
-    val minute: MinuteX,
-    val total: TotalX
+    val average: Average?,
+    val minute: Minute?,
+    val total: Total?
 )

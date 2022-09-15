@@ -3,7 +3,6 @@ package com.transfers.transfertracker.view.auth
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -24,8 +23,8 @@ import com.transfers.transfertracker.view.auth.screens.ForgotPasswordScreen
 import com.transfers.transfertracker.view.auth.screens.SignInScreen
 import com.transfers.transfertracker.view.auth.screens.SignUpScreen
 import com.transfers.transfertracker.view.auth.viewmodel.AuthViewModel
-import com.transfers.transfertracker.view.main.MainActivity
-import com.transfers.transfertracker.view.navigation.AuthNavGraph
+import com.transfers.transfertracker.view.MainActivity
+import com.transfers.transfertracker.navigation.AuthNavGraph
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
 import javax.inject.Inject
 
@@ -38,9 +37,7 @@ class AuthActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         (application as TransferApplication)
-            .component
-            .authComponent()
-            .create()
+            .authComponent
             .inject(this)
 
         lifecycle.addObserver(viewModel)
@@ -72,6 +69,7 @@ class AuthActivity : ComponentActivity() {
     private fun navigateToMain(){
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     private fun displayError(title: String, message: String){

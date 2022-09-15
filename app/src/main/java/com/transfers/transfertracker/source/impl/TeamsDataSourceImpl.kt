@@ -23,8 +23,13 @@ class TeamsDataSourceImpl @Inject constructor(private val teamsService: TeamServ
                 val teams = mutableListOf<Team>()
                 for (response in data.response) {
                     val team = response.team
-                    team.leagueId = id
-                    teams.add(team)
+                    if(team != null){
+                        team.leagueId = id
+                        teams.add(team)
+                    }
+                    else {
+                        throw Exception("error parsing teams list")
+                    }
                 }
                 return@map teams
             }

@@ -49,6 +49,7 @@ fun SignUpScreen() = TransferTrackerTheme {
             onValueChange = { name = it },
             label = { Text(text = "Name") },
             shape = RoundedCornerShape(50.dp),
+            maxLines= 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             modifier = Modifier.constrainAs(nameEditText) {
                 end.linkTo(parent.end)
@@ -62,6 +63,7 @@ fun SignUpScreen() = TransferTrackerTheme {
             onValueChange = { email = it },
             label = { Text(text = "Email") },
             shape = RoundedCornerShape(50.dp),
+            maxLines= 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.constrainAs(emailEditText) {
                 top.linkTo(nameEditText.bottom, 15.dp)
@@ -75,6 +77,7 @@ fun SignUpScreen() = TransferTrackerTheme {
             onValueChange = { password = it },
             label = { Text(text = "Password") },
             shape = RoundedCornerShape(50.dp),
+            maxLines= 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.constrainAs(passwordEditText) {
                 top.linkTo(emailEditText.bottom, 15.dp)

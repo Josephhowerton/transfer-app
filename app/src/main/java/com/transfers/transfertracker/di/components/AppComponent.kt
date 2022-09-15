@@ -8,12 +8,9 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [
-    AppModule::class,
-    RepositoryModule::class,
-    SubcomponentsModule::class,
-    ViewModelBuilderModule::class,
-    DataSourceModule::class,
-    NetworkModule::class
+    AppModuleProvides::class,
+    AppModuleBinds::class,
+    NetworkModule::class,
 ])
 interface AppComponent {
 
@@ -21,8 +18,4 @@ interface AppComponent {
     interface Factory {
         fun create(@BindsInstance application: Application): AppComponent
     }
-
-    fun authComponent(): AuthComponent.Factory
-    fun dashboardComponent(): DashboardComponent.Factory
-
 }

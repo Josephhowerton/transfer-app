@@ -50,6 +50,7 @@ fun ForgotPasswordScreen(viewModel: AuthViewModel) = TransferTrackerTheme {
             label = { Text("Email") },
             onValueChange = {emailField = it},
             shape = RoundedCornerShape(50.dp),
+            maxLines= 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.constrainAs(emailEditText) {
                 end.linkTo(parent.end)

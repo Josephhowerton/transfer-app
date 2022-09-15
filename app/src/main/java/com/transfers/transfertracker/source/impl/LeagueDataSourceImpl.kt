@@ -1,6 +1,7 @@
 package com.transfers.transfertracker.source.impl
 
 import com.transfers.transfertracker.model.league.League
+import com.transfers.transfertracker.model.league.Response
 import com.transfers.transfertracker.network.LeagueEndpoints.DEFAULT_VALUE_CURRENT
 import com.transfers.transfertracker.network.LeagueEndpoints.DEFAULT_VALUE_TYPE
 import com.transfers.transfertracker.network.LeagueEndpoints.KEY_COUNTRY_CODE
@@ -24,16 +25,21 @@ class LeagueDataSourceImpl @Inject constructor(private val leaguesService: Leagu
     override fun fetchLeagues() : Single<List<League>> =
         leaguesService.fetchLeaguesRemote(API_FOOTBALL_HEADER_MAP, leaguesMap)
             .map { data ->
-                val leagues = mutableListOf<League>()
-                for(response in data.response){
-                    val league = response.league
-                    val country = response.country
-                    league.countryCode = country.code
-                    league.country = country.name
-                    league.flag = country.flag
-                    leagues.add(league)
+                data.response?.let {
+                    val leagues = mutableListOf<League>()
+                    for(response in it){
+                        val league = response.league
+                        val country = response.country
+                        if(league != null && country != null){
+                            league.countryCode = country.code
+                            league.country = country.name
+                            league.flag = country.flag
+                            leagues.add(league)
+                        }
+                    }
+                    return@map leagues
                 }
-                return@map leagues
+                throw Exception("Could not parse list")
             }
 
 
@@ -41,16 +47,25 @@ class LeagueDataSourceImpl @Inject constructor(private val leaguesService: Leagu
         leaguesMap[KEY_COUNTRY_CODE] = code
         return leaguesService.fetchLeaguesRemote(API_FOOTBALL_HEADER_MAP, leaguesMap)
             .map { data ->
-                val leagues = mutableListOf<League>()
-                for (response in data.response) {
-                    val league = response.league
-                    val country = response.country
-                    league.countryCode = country.code
-                    league.country = country.name
-                    league.flag = country.flag
-                    leagues.add(league)
+                data.response?.let {
+                    val leagues = mutableListOf<League>()
+                    for(response in it){
+                        val league = response.league
+                        val country = response.country
+                        if(league != null && country != null){
+                            league.countryCode = country.code
+                            league.country = country.name
+                            league.flag = country.flag
+                            leagues.add(league)
+                        }
+                    }
+                    return@map leagues
                 }
-                return@map leagues
+                throw Exception("Could not parse list")
             }
+    }
+
+    private fun createCountryList(leagues: MutableList<League>, response: Response){
+
     }
 }

@@ -2,6 +2,7 @@ package com.transfers.transfertracker.source.impl
 
 import com.transfers.transfertracker.model.country.Country
 import com.transfers.transfertracker.network.CountryService
+import com.transfers.transfertracker.persistents.dao.CountryDAO
 import com.transfers.transfertracker.source.CountryDataSource
 import com.transfers.transfertracker.util.Keys.API_FOOTBALL_HEADER_MAP
 import io.reactivex.rxjava3.core.Observable
@@ -9,11 +10,23 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-class CountryDataSourceImpl @Inject constructor(private val service: CountryService): CountryDataSource {
+class CountryDataSourceImpl @Inject constructor(private val service: CountryService, private val dao: CountryDAO): CountryDataSource {
 
     override fun fetchAllCountries(): Single<List<Country>> =
+        dao.getAllCountries()
+            .onErrorResumeWith { fetchAllCountriesFromApi() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+
+    override fun fetchAllCountriesFromApi(): Single<List<Country>> =
         service.fetchAllCountries(API_FOOTBALL_HEADER_MAP)
-            .map { it.response }
+            .doOnSubscribe { dao.invalidateCache() }
+            .map { result ->
+                result.response.filter {
+                    (it.code != null && it.flag != null)
+                }
+            }
+            .doOnSuccess { saveCountries(it) }
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
 
@@ -31,4 +44,13 @@ class CountryDataSourceImpl @Inject constructor(private val service: CountryServ
         service.fetchCountriesBySearch(API_FOOTBALL_HEADER_MAP, query)
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
+
+    override fun getPlayerCountry(name: String): Single<Country> =
+        dao.getPlayerCountry(name)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+
+    private fun saveCountries(countries: List<Country>) {
+        dao.saveCountries(countries)
+    }
 }

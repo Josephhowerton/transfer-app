@@ -1,51 +1,75 @@
 package com.transfers.transfertracker.source.impl
 
-import com.google.firebase.firestore.FirebaseFirestore
-import com.transfers.transfertracker.model.player.Player
+import android.util.Log
+import com.transfers.transfertracker.model.player.PlayerProfile
+import com.transfers.transfertracker.model.squad.SquadPlayer
 import com.transfers.transfertracker.model.squad.SquadResponse
 import com.transfers.transfertracker.network.SquadEndpoints.KEY_TEAM
 import com.transfers.transfertracker.network.SquadService
+import com.transfers.transfertracker.network.TeamsEndpoints.KEY_LEAGUE
+import com.transfers.transfertracker.network.TeamsEndpoints.KEY_SEASON
+import com.transfers.transfertracker.network.TeamsEndpoints.KEY_ID
 import com.transfers.transfertracker.source.SquadSource
 import com.transfers.transfertracker.util.Keys.API_FOOTBALL_HEADER_MAP
-import com.transfers.transfertracker.util.RemoteCache
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
-class SquadDataSourceImpl @Inject constructor(private val squadService: SquadService) : SquadSource {
+class SquadDataSourceImpl @Inject constructor(private val squadService: SquadService) :
+    SquadSource {
 
-    private val squadsMap: MutableMap<String, String> = mutableMapOf()
+    private var squadsMap: MutableMap<String, String> = mutableMapOf()
 
-    override fun fetchSquad(tid: String): Single<List<Player>> =
-        fetchSquadFromApi(tid)
-            .flatMap { assemblePlayerList(tid, it) }
-            .doOnSuccess { players ->
-                players.forEach { player ->
-                    savePlayers(player)
-                }
-            }
-
-    override fun fetchSquadFromApi(tid: String): Single<SquadResponse> {
-        squadsMap[KEY_TEAM] = tid
+    override fun fetchSquad(tid: String): Single<List<SquadPlayer>> {
+        squadsMap = mutableMapOf(KEY_TEAM to tid)
         return squadService.fetchSquad(API_FOOTBALL_HEADER_MAP, squadsMap)
-    }
-
-    private fun savePlayers(player: Player) {
-        FirebaseFirestore.getInstance()
-            .collection(RemoteCache.COLLECTION_PLAYERS)
-            .document(player.id.toString()).set(player)
-            .addOnSuccessListener { }
-            .addOnFailureListener { }
-    }
-
-    private fun assemblePlayerList(tid: String, data: SquadResponse): Single<List<Player>> =
-        Single.create { emitter ->
-            val players = mutableListOf<Player>()
-            for (response in data.response) {
-                response.players.forEach {
-                    it.teamId = tid
-                    players.add(it)
-                }
+            .concatMap { assemblePlayerList(it) }
+            .doOnError {
+                Log.println(Log.ASSERT, "fetchSquad", it.toString())
             }
-            emitter.onSuccess(players)
+    }
+
+    override fun fetchPlayerProfile(
+        leagueId: String,
+        teamId: String,
+        playerId: String
+    ): Single<List<PlayerProfile>> {
+        squadsMap = mutableMapOf(
+            KEY_TEAM to teamId,
+            KEY_LEAGUE to leagueId,
+            KEY_ID to playerId,
+            KEY_SEASON to "2022"
+        )
+
+        return squadService.fetchPlayerProfile(API_FOOTBALL_HEADER_MAP, squadsMap)
+            .map { data ->
+                data.response?.let {
+                    return@map it
+                }
+                throw Exception("Response is null")
+            }.doOnError {
+                Log.println(Log.ASSERT, "fetchSquad", it.toString())
+            }
+    }
+
+    private fun assemblePlayerList(data: SquadResponse): Single<List<SquadPlayer>> =
+        Single.create { emitter ->
+            data.response?.let {
+                val squadPlayers = mutableListOf<SquadPlayer>()
+                for (response in data.response) {
+                    val team = response.team
+                    val players = response.players
+                    if (players != null && team != null && players.isNotEmpty()) {
+                        response.players.forEach {
+                            if(team.id != null){
+                                it.teamId = team.id.toString()
+                                squadPlayers.add(it)
+                            }
+                        }
+                    }else{
+                        emitter.onError(Exception("Could not assemble player list"))
+                    }
+                }
+                emitter.onSuccess(squadPlayers)
+            } ?: emitter.onError(Exception("Could not assemble player list"))
         }
 }

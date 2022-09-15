@@ -1,17 +1,31 @@
 package com.transfers.transfertracker.di.components
 
+import android.app.Application
+import com.transfers.transfertracker.di.modules.AppModuleBinds
+import com.transfers.transfertracker.di.modules.AppModuleProvides
+import com.transfers.transfertracker.di.modules.NetworkModule
 import com.transfers.transfertracker.di.modules.ViewModelModule
 import com.transfers.transfertracker.view.auth.AuthActivity
-import com.transfers.transfertracker.view.main.MainActivity
-import dagger.Subcomponent
+import com.transfers.transfertracker.view.auth.viewmodel.AuthViewModel
+import dagger.BindsInstance
+import dagger.Component
+import javax.inject.Singleton
 
-@Subcomponent(modules = [ViewModelModule::class])
+@Singleton
+@Component(modules = [
+    AppModuleProvides::class,
+    AppModuleBinds::class,
+    NetworkModule::class,
+    ViewModelModule::class
+])
 interface AuthComponent {
 
     fun inject(activity: AuthActivity)
 
-    @Subcomponent.Factory
+    @Component.Factory
     interface Factory{
-        fun create() : AuthComponent
+        fun create(@BindsInstance application: Application): AuthComponent
     }
+
+    fun getAuthViewModel(): AuthViewModel
 }

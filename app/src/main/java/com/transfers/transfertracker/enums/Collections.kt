@@ -10,4 +10,5 @@ enum class Fields {
     Id,
     Email,
     Name,
+    current_team
 }

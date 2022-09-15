@@ -2,15 +2,17 @@ package com.transfers.transfertracker.repo.impl
 
 import com.transfers.transfertracker.model.country.Country
 import com.transfers.transfertracker.model.league.League
-import com.transfers.transfertracker.model.news.NewsResponse
-import com.transfers.transfertracker.model.player.Player
-import com.transfers.transfertracker.model.squad.SquadResponse
+import com.transfers.transfertracker.model.news.News
+import com.transfers.transfertracker.model.player.PlayerProfile
+import com.transfers.transfertracker.model.squad.SquadPlayer
+import com.transfers.transfertracker.model.stats.TeamStatistics
 import com.transfers.transfertracker.model.teams.Team
 import com.transfers.transfertracker.repo.MainRepository
 import com.transfers.transfertracker.source.*
 import com.transfers.transfertracker.util.result.BaseResult
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -21,10 +23,14 @@ class MainRepositoryImpl @Inject constructor(
     private val teamsSource: TeamsSource,
     private val transferDataSource: TransferDataSource,
     private val userSource: UserSource,
+    private val statisticsSource: StatisticsSource
 ): MainRepository {
 
     override fun fetchAllCountries(): Single<List<Country>> =
         countryDataSource.fetchAllCountries()
+
+    override fun fetchAllCountriesFromApi(): Single<List<Country>> =
+        countryDataSource.fetchAllCountriesFromApi()
 
     override fun fetchCountryByCode(code: String): Single<List<Country>> =
         countryDataSource.fetchCountryByCode(code)
@@ -41,25 +47,41 @@ class MainRepositoryImpl @Inject constructor(
     override fun fetchLeaguesByCountry(code: String): Single<List<League>> =
         leaguesSource.fetchLeaguesByCountry(code)
 
-    override fun fetchLatestTeamNews(q: String, language: String) : Single<NewsResponse> =
-        newsSource.fetchLatestTeamNews(q, language)
+    override fun fetchLatestTeamNews(q: String) : Single<List<News>> =
+        newsSource.fetchLatestTeamNews(q)
 
-    override fun fetchLatestTransferNews(language: String) : Single<NewsResponse> =
+    override fun fetchLatestTransferNews(language: String) : Single<List<News>> =
         newsSource.fetchLatestTransferNews(language)
 
-    override fun fetchSquad(tid: String): Single<List<Player>> =
+    override fun fetchSquad(tid: String): Single<List<SquadPlayer>> =
         squadSource.fetchSquad(tid)
 
-    override fun fetchSquadFromApi(tid: String): Single<SquadResponse> =
-        squadSource.fetchSquadFromApi(tid)
+    override fun fetchPlayerProfiles(leagueId: String, teamId: String, playerId: String): Single<List<PlayerProfile>> =
+        squadSource.fetchPlayerProfile(leagueId, teamId, playerId)
 
     override fun fetchTeams(id: Int) : Single<List<Team>> =
         teamsSource.fetchTeams(id)
 
+    override fun fetchTeamStatistics(leagueId: String, teamId: String): Single<TeamStatistics> =
+        statisticsSource.fetchTeamsStatistics(leagueId, teamId)
+
     override fun saveSelectedTeam(team: Team) : Single<BaseResult<Boolean>> =
         userSource.getUser()
-            .flatMap{
+            .concatMap {
+                it.currentTeam = team.id.toString()
+                userSource.updateUser(it)
+            }
+            .flatMap {
                 userSource.saveSelectedTeam(it, team)
+            }
+            .doOnSuccess {
+                updateCurrentTeam(team)
+            }
+
+    override fun removeSelectedTeam(team: Team): Single<BaseResult<Boolean>> =
+        userSource.getUser()
+            .flatMap {
+                userSource.removeSelectedTeam(user = it, team = team)
             }
 
     override fun getAllUsersTeam() : Single<List<Team>> =
@@ -68,7 +90,20 @@ class MainRepositoryImpl @Inject constructor(
                 userSource.getAllUsersTeam(it.id)
             }
 
-    override fun getUserSelectedTeam(): Single<Team> = TODO()
+    override fun getCurrentTeam(): Single<Team> =
+        userSource.getUser()
+            .flatMap {
+                userSource.getCurrentTeam(it)
+            }
 
-    override fun updateSelectedTeam() = TODO()
+
+    override fun updateCurrentTeam(team: Team) : Single<BaseResult<Boolean>> =
+        userSource.getUser()
+            .flatMap {
+                it.currentTeam = team.id.toString()
+                userSource.updateUserTeam(user = it)
+            }
+
+    override fun getPlayerCountry(name: String) : Single<Country> =
+        countryDataSource.getPlayerCountry(name)
 }

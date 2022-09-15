@@ -62,6 +62,7 @@ fun SignInScreen(viewModel: AuthViewModel, navController: NavController) = Trans
             onValueChange = {email = it},
             label = { Text("Email") },
             shape = RoundedCornerShape(50.dp),
+            maxLines= 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.constrainAs(emailEditText) {
                 end.linkTo(parent.end)
@@ -75,6 +76,7 @@ fun SignInScreen(viewModel: AuthViewModel, navController: NavController) = Trans
             onValueChange = {password = it},
             label = { Text("Password") },
             shape = RoundedCornerShape(50.dp),
+            maxLines= 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.constrainAs(passwordEditText) {
                 top.linkTo(emailEditText.bottom, 15.dp)
@@ -86,7 +88,7 @@ fun SignInScreen(viewModel: AuthViewModel, navController: NavController) = Trans
         ClickableText(
             text = AnnotatedString("Forgot Password"),
             style = TextStyle(color = Color.Blue),
-            onClick = { navController.navigate(Screen.FORGOT_PASSWORD.name) },
+            onClick = { navController.navigate(Screen.FORGOT_PASSWORD) },
             modifier = Modifier.constrainAs(forgotPasswordText) {
                 top.linkTo(passwordEditText.bottom, 7.dp)
                 end.linkTo(passwordEditText.end)
@@ -108,7 +110,7 @@ fun SignInScreen(viewModel: AuthViewModel, navController: NavController) = Trans
         ClickableText(
             text = AnnotatedString("Don't have an account? Start here."),
             style = TextStyle(color = Color.Blue),
-            onClick = { navController.navigate(Screen.SIGN_UP.name) },
+            onClick = { navController.navigate(Screen.SIGN_UP) },
             modifier = Modifier
                 .constrainAs(signUpText) {
                     bottom.linkTo(parent.bottom, margin = 25.dp)

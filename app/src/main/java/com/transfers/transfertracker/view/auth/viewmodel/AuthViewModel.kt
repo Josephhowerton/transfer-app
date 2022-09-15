@@ -14,6 +14,7 @@ import com.transfers.transfertracker.util.errors.AuthException
 import com.transfers.transfertracker.view.auth.AuthSuccessUserView
 import com.transfers.transfertracker.view.auth.ResetSuccessUserView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject

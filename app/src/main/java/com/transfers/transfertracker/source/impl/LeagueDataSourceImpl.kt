@@ -4,10 +4,10 @@ import com.transfers.transfertracker.model.league.League
 import com.transfers.transfertracker.model.league.Response
 import com.transfers.transfertracker.network.LeagueEndpoints.DEFAULT_VALUE_CURRENT
 import com.transfers.transfertracker.network.LeagueEndpoints.DEFAULT_VALUE_TYPE
-import com.transfers.transfertracker.network.LeagueEndpoints.KEY_COUNTRY_CODE
+import com.transfers.transfertracker.network.LeagueEndpoints.KEY_COUNTRY
 import com.transfers.transfertracker.network.LeagueEndpoints.KEY_CURRENT
 import com.transfers.transfertracker.network.LeagueEndpoints.KEY_TYPE
-import com.transfers.transfertracker.network.LeagueService
+import com.transfers.transfertracker.network.service.LeagueService
 import com.transfers.transfertracker.source.LeaguesSource
 import com.transfers.transfertracker.util.Keys.API_FOOTBALL_HEADER_MAP
 import io.reactivex.rxjava3.core.Single
@@ -44,7 +44,7 @@ class LeagueDataSourceImpl @Inject constructor(private val leaguesService: Leagu
 
 
     override fun fetchLeaguesByCountry(code: String) : Single<List<League>> {
-        leaguesMap[KEY_COUNTRY_CODE] = code
+        leaguesMap[KEY_COUNTRY] = code
         return leaguesService.fetchLeaguesRemote(API_FOOTBALL_HEADER_MAP, leaguesMap)
             .map { data ->
                 data.response?.let {

@@ -15,30 +15,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import com.transfers.transfertracker.R
-import com.transfers.transfertracker.di.TransferApplication
-import com.transfers.transfertracker.di.factory.ViewModelFactory
 import com.transfers.transfertracker.util.result.AuthResultError
 import com.transfers.transfertracker.util.result.AuthResultSuccess
 import com.transfers.transfertracker.view.auth.screens.ForgotPasswordScreen
 import com.transfers.transfertracker.view.auth.screens.SignInScreen
 import com.transfers.transfertracker.view.auth.screens.SignUpScreen
 import com.transfers.transfertracker.view.auth.viewmodel.AuthViewModel
-import com.transfers.transfertracker.view.MainActivity
+import com.transfers.transfertracker.view.activity.MainActivity
 import com.transfers.transfertracker.navigation.AuthNavGraph
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AuthActivity : ComponentActivity() {
 
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-    private val viewModel by viewModels<AuthViewModel> { viewModelFactory }
+
+    private val viewModel:AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        (application as TransferApplication)
-            .authComponent
-            .inject(this)
 
         lifecycle.addObserver(viewModel)
 
@@ -86,7 +81,7 @@ class AuthActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    SignInScreen()
+        SignInScreen()
 }
 
 @Composable
@@ -95,12 +90,12 @@ fun SignIn(viewModel: AuthViewModel, navController: NavHostController){
 }
 
 @Composable
-fun SignUp(viewModel: AuthViewModel){
-    SignUpScreen(viewModel)
+fun SignUp(viewModel: AuthViewModel, onErrorAction: () -> Unit){
+    SignUpScreen(viewModel, onErrorAction)
 }
 
 @Composable
-fun ForgotPassword(viewModel: AuthViewModel){
-    ForgotPasswordScreen(viewModel)
+fun ForgotPassword(viewModel: AuthViewModel, onErrorAction: () -> Unit){
+    ForgotPasswordScreen(viewModel, onErrorAction)
 }
 

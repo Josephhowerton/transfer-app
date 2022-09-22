@@ -1,3 +1,0 @@
-package com.transfers.transfertracker.source
-
-interface TransferDataSource

@@ -275,8 +275,10 @@ fun StatisticsComponent(viewModel: DashboardViewModel,
                     }
             )
 
-            if(currentTeam.value != null){
-                ClickableText(onClick = { viewModel.navigateToTeamProfile() }, text = AnnotatedString("More"),
+            if(currentTeam.value != null && currentTeam.value?.id != null && currentTeam.value?.leagueId != null){
+                val teamId = currentTeam.value?.id.toString()
+                val leagueId = currentTeam.value?.leagueId.toString()
+                ClickableText(onClick = { viewModel.navigateToTeamProfile(team = teamId, league = leagueId) }, text = AnnotatedString("More"),
                     style = TextStyle(
                         color = HyperLinkBlue,
                         fontSize = 20.sp

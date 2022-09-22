@@ -54,7 +54,7 @@ object TeamsEndpoints {
     const val DEFAULT_VALUE_TEAM_ID = "33"
     const val DEFAULT_VALUE_NAME = "Manchester United"
     const val DEFAULT_VALUE_LEAGUE = "Premier League"
-    const val DEFAULT_VALUE_SEASON = "2021"
+    const val DEFAULT_VALUE_SEASON = "2022"
     const val DEFAULT_VALUE_COUNTRY = "England"
     const val DEFAULT_VALUE_SEARCH = "Man U"
     const val DEFAULT_VALUE_LIMIT_DATE = "2020-08-08"

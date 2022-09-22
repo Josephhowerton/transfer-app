@@ -4,25 +4,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.transfers.transfertracker.R
+import com.transfers.transfertracker.view.component.TransferTopAppBar
 import com.transfers.transfertracker.view.components.*
-import com.transfers.transfertracker.view.theme.HyperLinkBlue
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
 
+
+
 @Composable
-fun Dashboard(viewModel: DashboardViewModel) = TransferTrackerTheme {
-    Scaffold(bottomBar = {TransferBottomAppBar(viewModel)}) {
+fun Dashboard() = TransferTrackerTheme {
+    val viewModel: DashboardViewModel = hiltViewModel()
+    Scaffold(topBar = {
+
+        TransferTopAppBar(stringResource(id = R.string.title_dashboard), true) { viewModel.signOut() }
+
+    }) {
         ConstraintLayout(
             Modifier.verticalScroll(
                 state = rememberScrollState(),
             )
         ) {
-            val (teams, news, players, stats) = createRefs()
+            val (teams, news, players, stats, transfers) = createRefs()
+
+            DisposableEffect(key1 = viewModel) {
+                onDispose { viewModel.onDestroy() }
+            }
 
             TeamsComponent(
                 viewModel,
@@ -44,7 +56,7 @@ fun Dashboard(viewModel: DashboardViewModel) = TransferTrackerTheme {
                     }
             )
 
-            PlayerComponent(
+            SquadComponent(
                 viewModel,
                 Modifier
                     .padding(bottom = 5.dp)
@@ -63,27 +75,15 @@ fun Dashboard(viewModel: DashboardViewModel) = TransferTrackerTheme {
                         top.linkTo(players.bottom)
                     }
             )
-        }
-    }
-}
 
-
-@Composable
-private fun TransferBottomAppBar(viewModel: DashboardViewModel) {
-    var mDisplayMenu by remember { mutableStateOf(false) }
-    BottomAppBar( backgroundColor = HyperLinkBlue ) {
-        IconButton(onClick = { mDisplayMenu = !mDisplayMenu }) {
-            Icon(Icons.Default.MoreVert, "")
-        }
-
-        DropdownMenu(
-            expanded = mDisplayMenu,
-            onDismissRequest = { mDisplayMenu = false }
-        ) {
-
-            DropdownMenuItem(onClick = { viewModel.signOut() }) {
-                Text(text = "Logout")
-            }
+            TransferComponent(viewModel,
+                Modifier
+                    .padding(bottom = 5.dp)
+                    .padding(bottom = 50.dp)
+                    .constrainAs(transfers) {
+                        top.linkTo(stats.bottom)
+                    }
+            )
         }
     }
 }

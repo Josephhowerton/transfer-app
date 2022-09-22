@@ -1,7 +1,7 @@
 package com.transfers.transfertracker.source.impl
 
 import com.transfers.transfertracker.model.country.Country
-import com.transfers.transfertracker.network.CountryService
+import com.transfers.transfertracker.network.service.CountryService
 import com.transfers.transfertracker.persistents.dao.CountryDAO
 import com.transfers.transfertracker.source.CountryDataSource
 import com.transfers.transfertracker.util.Keys.API_FOOTBALL_HEADER_MAP
@@ -12,20 +12,15 @@ import javax.inject.Inject
 
 class CountryDataSourceImpl @Inject constructor(private val service: CountryService, private val dao: CountryDAO): CountryDataSource {
 
-    override fun fetchAllCountries(): Single<List<Country>> =
+    override fun getAllCountries(): Single<List<Country>> =
         dao.getAllCountries()
-            .onErrorResumeWith { fetchAllCountriesFromApi() }
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
 
-    override fun fetchAllCountriesFromApi(): Single<List<Country>> =
+    override fun fetchAllCountries(): Single<List<Country>> =
         service.fetchAllCountries(API_FOOTBALL_HEADER_MAP)
             .doOnSubscribe { dao.invalidateCache() }
-            .map { result ->
-                result.response.filter {
-                    (it.code != null && it.flag != null)
-                }
-            }
+            .map { it.response.filter { country ->  (country.code != null && country.flag != null) } }
             .doOnSuccess { saveCountries(it) }
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())

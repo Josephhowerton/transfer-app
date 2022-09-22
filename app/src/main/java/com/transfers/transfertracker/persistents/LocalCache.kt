@@ -9,7 +9,7 @@ import com.transfers.transfertracker.persistents.dao.CountryDAO
 @Database(entities = [Country::class], version = DATABASE_VERSION, exportSchema = false)
 abstract class LocalCache: RoomDatabase() {
     companion object{
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 4
     }
 
     abstract fun getCountryDAO(): CountryDAO

@@ -7,89 +7,78 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.transfers.transfertracker.R
 import com.transfers.transfertracker.model.country.Country
-import com.transfers.transfertracker.view.dashboard.DashboardViewModel
+import com.transfers.transfertracker.view.component.TransferTrackerAlertDialog
+import com.transfers.transfertracker.view.component.TransferTopAppBar
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
 
 @Preview
 @Composable
 fun CountryListPreview() = TransferTrackerTheme {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(3.dp),
-        modifier= Modifier.fillMaxSize()) {
-        items(20){
-            CountryListItemPreview()
-        }
-    }
-}
-
-@Preview
-@Composable
-fun CountryListItemPreview() = Card(elevation = 0.dp) {
-    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-        val (leagueImage, leagueName) = createRefs()
-        Image(painter = painterResource(id = R.drawable.ic_baseline_flag_24),
-            contentDescription = "",
-            modifier = Modifier
-                .padding(end = 5.dp, start = 5.dp, top = 15.dp, bottom = 15.dp)
-                .constrainAs(leagueImage) {
-                    start.linkTo(parent.start)
-                    top.linkTo(leagueName.top)
-                    bottom.linkTo(leagueName.bottom)
-                }
-        )
-
-        Text(text = "Country",
-            fontSize = 24.sp,
-            modifier = Modifier
-                .padding(end = 5.dp, start = 5.dp, top = 15.dp, bottom = 15.dp)
-                .constrainAs(leagueName) {
-                    top.linkTo(parent.top)
-                    start.linkTo(leagueImage.end)
-                }
-        )
-    }
+    CountryList{}
 }
 
 @Composable
-fun CountryList(viewModel: CountryListViewModel) = TransferTrackerTheme {
+fun CountryList(onErrorAction: () -> Unit) = TransferTrackerTheme {
+    val viewModel: CountryListViewModel = hiltViewModel()
     val countries by remember { mutableStateOf(viewModel.countriesList) }
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(5.dp),
-        modifier = Modifier.fillMaxSize()) {
-        items(countries.size) { index ->
-            CountryListItem(viewModel, countries[index])
+    val showErrorDialog by remember { viewModel.shouldShowErrorDialog }
+    val errorTitle by remember { viewModel.errorTitle }
+    val errorMessage by remember { viewModel.errorMessage }
+
+    DisposableEffect(key1 = viewModel) {
+        onDispose { viewModel.onDestroy() }
+    }
+
+    Scaffold(topBar = {
+
+        TransferTopAppBar(stringResource(id = R.string.title_country_list), false, onErrorAction)
+
+    }) {
+
+        TransferTrackerAlertDialog(
+            title = errorTitle,
+            message = errorMessage,
+            buttonTitle = R.string.title_dismiss_button,
+            showErrorDialog = showErrorDialog,
+            onErrorAction
+        )
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(countries.size) { index ->
+                CountryListItem(viewModel, countries[index], onErrorAction)
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CountryListItem(viewModel: CountryListViewModel, country: Country) =
-    Card(
-        shape = RoundedCornerShape(10.dp),
+fun CountryListItem(viewModel: CountryListViewModel, country: Country, onErrorAction: () -> Unit) =
+    Card(shape = RoundedCornerShape(10.dp),
         elevation = 2.dp,
-        onClick = {
-            viewModel.navigateToLeaguesList(country.name)
-        }
-    ) {
+        onClick = { viewModel.navigateToLeaguesList(country.name) }) {
+
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (flag, name) = createRefs()
 
@@ -99,6 +88,7 @@ fun CountryListItem(viewModel: CountryListViewModel, country: Country) =
                     .data(country.flag)
                     .build()
             )
+
             Image(painter = painter,
                 contentDescription = "${country.name} flag",
                 contentScale = ContentScale.Fit,
@@ -123,9 +113,4 @@ fun CountryListItem(viewModel: CountryListViewModel, country: Country) =
                     }
             )
         }
-}
-
-@Composable
-fun SvgImageSample() {
-
 }

@@ -1,7 +1,7 @@
 package com.transfers.transfertracker.source.impl
 
 import com.transfers.transfertracker.model.stats.TeamStatistics
-import com.transfers.transfertracker.network.StatisticsService
+import com.transfers.transfertracker.network.service.StatisticsService
 import com.transfers.transfertracker.source.StatisticsSource
 import com.transfers.transfertracker.util.Keys.API_FOOTBALL_HEADER_MAP
 import io.reactivex.rxjava3.core.Single

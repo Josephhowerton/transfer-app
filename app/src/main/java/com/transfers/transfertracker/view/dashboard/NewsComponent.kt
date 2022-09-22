@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,12 +30,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.skydoves.landscapist.glide.GlideImage
 import com.transfers.transfertracker.R
-import com.transfers.transfertracker.di.components.NewsComponent
-import com.transfers.transfertracker.model.news.News
+import com.transfers.transfertracker.view.component.TransferTrackerAlertDialog
+import com.transfers.transfertracker.view.component.TransferTopAppBar
 import com.transfers.transfertracker.view.dashboard.DashboardViewModel
 import com.transfers.transfertracker.view.dashboard.GetStartedItem
-import com.transfers.transfertracker.view.news.NewsListViewModel
-import com.transfers.transfertracker.view.news.NewsViewModel
 import com.transfers.transfertracker.view.theme.CardBackgroundColor
 import com.transfers.transfertracker.view.theme.HyperLinkBlue
 import com.transfers.transfertracker.view.theme.NewsOverlayColor
@@ -203,7 +202,7 @@ fun NewsComponentScreen(viewModel: DashboardViewModel, modifier: Modifier) = Tra
             else{
                 LazyColumn( verticalArrangement = Arrangement.spacedBy(15.dp),
                     modifier = Modifier
-                        .padding(top = 20.dp, bottom = 40.dp)
+                        .padding(top = 20.dp, bottom = 5.dp)
                         .constrainAs(newsList) {
                             height = Dimension.fillToConstraints
                             top.linkTo(descriptionText.bottom)
@@ -232,7 +231,7 @@ fun NewsComponentScreen(viewModel: DashboardViewModel, modifier: Modifier) = Tra
                         fontSize = 20.sp
                     ),
                     modifier = Modifier
-                        .padding(15.dp)
+                        .padding(end = 15.dp, bottom = 15.dp, top = 5.dp)
                         .constrainAs(moreNews) {
                             end.linkTo(parent.end)
                             bottom.linkTo(parent.bottom)
@@ -402,22 +401,32 @@ fun NewsScreenPreview(){
 }
 
 @Composable
-fun NewsScreen(viewModel: DashboardViewModel) = TransferTrackerTheme {
-    val selectedStory = remember {
-        viewModel.selectedStory
-    }
-    selectedStory?.value?.image_url?.let { url ->
-        AndroidView(factory = {
-            WebView(it).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                webViewClient = WebViewClient()
-                loadUrl(url)
-            }
-        }, update = {
-            it.loadUrl(url)
-        })
+fun NewsScreen(link: String?, onErrorAction: () -> Unit) = TransferTrackerTheme {
+
+    Scaffold(topBar = {
+
+        TransferTopAppBar(stringResource(id = R.string.title_news_web), false, onErrorAction)
+
+    }) {
+        link?.let { url ->
+            AndroidView(factory = {
+                WebView(it).apply {
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    webViewClient = WebViewClient()
+                    loadUrl(url)
+                }
+            }, update = {
+                it.loadUrl(url)
+            })
+        } ?: TransferTrackerAlertDialog(
+            title = R.string.title_generic_error,
+            message = R.string.message_generic_error,
+            buttonTitle = R.string.title_dismiss_button,
+            showErrorDialog = true,
+            onClick = onErrorAction
+        )
     }
 }

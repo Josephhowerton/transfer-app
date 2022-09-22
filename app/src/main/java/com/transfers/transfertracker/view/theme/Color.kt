@@ -10,6 +10,7 @@ val Teal200 = Color(0xFF03DAC5)
 val HyperLinkBlue = Color(0xFF0E63AD)
 val CardBackgroundColor = Color(0xFFF5F5F5)
 val NewsOverlayColor = Color(0xCC000000)
+val LightGrey = Color(0xCC000000)
 
 val PlayerRatingLow = Color(0xFFF44336)
 val PlayerRatingAverage = Color(0xFFFCCB3A)

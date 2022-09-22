@@ -8,18 +8,21 @@ import com.transfers.transfertracker.util.errors.ErrorTransformer
 import com.transfers.transfertracker.navigation.Navigator
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-class AppModuleProvides {
-
-    private companion object{
-        const val DATA_BASE_NAME = "local-cache"
-    }
+@InstallIn(SingletonComponent::class)
+object AppModuleProvides {
+    private const val DATA_BASE_NAME = "local-cache"
 
     @Provides
     @Singleton
-    fun provideLocalCache(application: Application): LocalCache = Room.databaseBuilder(application, LocalCache::class.java, DATA_BASE_NAME).build()
+    fun provideLocalCache(application: Application): LocalCache =
+        Room.databaseBuilder(application, LocalCache::class.java, DATA_BASE_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     @Singleton

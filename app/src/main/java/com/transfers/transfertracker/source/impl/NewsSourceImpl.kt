@@ -2,7 +2,7 @@ package com.transfers.transfertracker.source.impl
 
 import com.transfers.transfertracker.model.news.News
 import com.transfers.transfertracker.util.errors.ErrorTransformer
-import com.transfers.transfertracker.network.NewsService
+import com.transfers.transfertracker.network.service.NewsService
 import com.transfers.transfertracker.source.NewsSource
 import com.transfers.transfertracker.util.Keys.MAP_HEADERS_NEWS
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

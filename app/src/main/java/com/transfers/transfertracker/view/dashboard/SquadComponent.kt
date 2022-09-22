@@ -1,18 +1,17 @@
-package com.transfers.transfertracker.view.components
+package com.transfers.transfertracker.view.dashboard
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,139 +22,20 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.skydoves.landscapist.glide.GlideImage
 import com.transfers.transfertracker.R
-import com.transfers.transfertracker.di.components.PlayersListComponent
-import com.transfers.transfertracker.model.squad.SquadPlayer
-import com.transfers.transfertracker.view.dashboard.DashboardViewModel
-import com.transfers.transfertracker.view.dashboard.GetStartedItem
+import com.transfers.transfertracker.view.components.TeamsComponentScreen
 import com.transfers.transfertracker.view.theme.CardBackgroundColor
 import com.transfers.transfertracker.view.theme.HyperLinkBlue
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
 
 @Preview(showBackground = true)
 @Composable
-fun PlayersComponentPreview() {
+fun SquadComponentPreview() {
     TeamsComponentScreen(Modifier)
 }
 
-@Composable
-fun PlayerComponentScreen(modifier: Modifier) = TransferTrackerTheme {
-    Card(
-        shape = RoundedCornerShape(2),
-        modifier = modifier
-            .fillMaxWidth()
-            .height(450.dp)
-    ) {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (descriptionText,
-                addATeamText,
-                selectedTeam,
-                selectedTeamImage,
-                secondTeam,
-                thirdTeam,
-                fourthTeam,
-                fifthTeam
-            ) = createRefs()
-
-            Image(painter = painterResource(id = R.drawable.ic_baseline_sports_soccer_24),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(36.dp)
-                    .padding(end = 2.dp)
-                    .constrainAs(selectedTeamImage) {
-                        start.linkTo(parent.start)
-                        top.linkTo(selectedTeam.top)
-                        bottom.linkTo(selectedTeam.bottom)
-                        end.linkTo(selectedTeam.start)
-                    }
-            )
-
-            Text(text = "PlaceHolderText",
-                fontSize = 32.sp,
-                modifier = Modifier
-                    .padding(start = 2.dp)
-                    .constrainAs(selectedTeam) {
-                        top.linkTo(parent.top, 5.dp)
-                        end.linkTo(parent.end)
-                        start.linkTo(selectedTeamImage.end)
-                    }
-            )
-
-            createHorizontalChain(selectedTeamImage, selectedTeam, chainStyle = ChainStyle.Packed)
-
-            Text(text = "Select a team below to change data.",
-                modifier = Modifier.constrainAs(descriptionText) {
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
-                    top.linkTo(selectedTeam.bottom, 5.dp)
-                }
-            )
-
-            TeamItem(
-                teamName = "Team 1",
-                crestUrl = "",
-                modifier = Modifier
-                    .padding(10.dp)
-                    .wrapContentSize()
-                    .constrainAs(secondTeam) {
-                        top.linkTo(descriptionText.bottom)
-                        bottom.linkTo(thirdTeam.top)
-                    }
-            )
-
-            TeamItem(
-                teamName = "Team 2",
-                crestUrl = "",
-                modifier = Modifier
-                    .padding(10.dp)
-                    .wrapContentSize()
-                    .constrainAs(thirdTeam) {
-                        top.linkTo(secondTeam.bottom)
-                        bottom.linkTo(fourthTeam.top)
-                    }
-            )
-
-            TeamItem(
-                teamName = "Team 3",
-                crestUrl = "",
-                modifier = Modifier
-                    .padding(10.dp)
-                    .wrapContentSize()
-                    .constrainAs(fourthTeam) {
-                        top.linkTo(thirdTeam.bottom)
-                        bottom.linkTo(fifthTeam.top)
-                    }
-            )
-
-            TeamItem(
-                teamName = "Team 4",
-                crestUrl = "",
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth()
-                    .constrainAs(fifthTeam) {
-                        top.linkTo(fourthTeam.bottom)
-                        bottom.linkTo(addATeamText.top)
-                    }
-            )
-
-            ClickableText(onClick = {}, text = AnnotatedString("Add Team"),
-                style = TextStyle(
-                    color = Color.Blue,
-                    fontSize = 20.sp
-                ),
-                modifier = Modifier
-                    .padding(15.dp)
-                    .constrainAs(addATeamText) {
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                    }
-            )
-        }
-    }
-}
 
 @Composable
-fun PlayerComponent(viewModel: DashboardViewModel, modifier: Modifier) = TransferTrackerTheme {
+fun SquadComponent(viewModel: DashboardViewModel, modifier: Modifier) = TransferTrackerTheme {
     Card(
         shape = RoundedCornerShape(2),
         modifier = modifier
@@ -170,7 +50,7 @@ fun PlayerComponent(viewModel: DashboardViewModel, modifier: Modifier) = Transfe
             viewModel.playersList
         }
 
-        val logo = if (currentTeam?.value?.logo != null)
+        val logo = if (currentTeam.value?.logo != null)
             currentTeam.value?.logo
         else
             R.drawable.ic_baseline_sports_soccer_24
@@ -218,8 +98,13 @@ fun PlayerComponent(viewModel: DashboardViewModel, modifier: Modifier) = Transfe
                 }
             )
 
-            if(players.isEmpty()){
-                GetStartedItem("Select A Team\n\nTo Get Started", Modifier
+            if (players.isEmpty()) {
+                val message = if (currentTeam.value == null) {
+                    "Select A Team\n\nTo Get Started"
+                } else {
+                    "We are having trouble\n\nfinding your team"
+                }
+                GetStartedItem(message, Modifier
                     .padding(top = 20.dp, bottom = 40.dp)
                     .constrainAs(teamsList) {
                         start.linkTo(parent.start)
@@ -227,7 +112,7 @@ fun PlayerComponent(viewModel: DashboardViewModel, modifier: Modifier) = Transfe
                         top.linkTo(descriptionText.bottom)
                         bottom.linkTo(parent.bottom)
                     })
-            }else {
+            } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(15.dp),
                     modifier = Modifier
                         .padding(top = 20.dp, bottom = 20.dp)
@@ -252,7 +137,6 @@ fun PlayerComponent(viewModel: DashboardViewModel, modifier: Modifier) = Transfe
                                     leagueId = leagueId,
                                     playerId = playerId,
                                     teamId = teamId,
-                                    modifier = Modifier
                                 )
                             }
                         }
@@ -260,8 +144,8 @@ fun PlayerComponent(viewModel: DashboardViewModel, modifier: Modifier) = Transfe
                 }
             }
 
-            if(players.isNotEmpty()) {
-                ClickableText(onClick = { viewModel.navigateToPlayersList() },
+            if (players.isNotEmpty()) {
+                ClickableText(onClick = { viewModel.navigateToSquadList() },
                     text = AnnotatedString("More"),
                     style = TextStyle(
                         color = HyperLinkBlue,
@@ -288,15 +172,20 @@ fun PlayerItem(
     leagueId: Int,
     teamId: String,
     playerId: Int,
-    modifier: Modifier
 ) =
     Card(backgroundColor = CardBackgroundColor,
         elevation = 2.dp,
-        modifier = modifier,
-        onClick = { viewModel.navigateToPlayerProfile() }) {
+        onClick = {
+            viewModel.navigateToPlayerProfile(
+                playerId.toString(),
+                teamId,
+                leagueId.toString()
+            )
+        }) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 5.dp, bottom = 5.dp)
         ) {
             val (crest, name) = createRefs()
             GlideImage(imageModel = playerPhoto,

@@ -2,9 +2,11 @@ package com.transfers.transfertracker.di.modules
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.transfers.transfertracker.network.*
+import com.transfers.transfertracker.network.service.*
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -15,12 +17,11 @@ import javax.inject.Singleton
 
 
 @Module
-class NetworkModule {
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
 
-    companion object{
-        private const val NEWS_DATA_API_BASE_URL = "https://newsdata.io/api/1/"
-        private const val SPORTS_DATA_API_BASE_URL = "https://v3.football.api-sports.io/"
-    }
+    private const val NEWS_DATA_API_BASE_URL = "https://newsdata.io/api/1/"
+    private const val SPORTS_DATA_API_BASE_URL = "https://v3.football.api-sports.io/"
 
     @Provides
     @Singleton
@@ -83,17 +84,6 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideTeamsService(gson: Gson, okHttpClient: OkHttpClient) : TeamService =
-        Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .client(okHttpClient)
-            .baseUrl(SPORTS_DATA_API_BASE_URL)
-            .build()
-            .create()
-
-    @Provides
-    @Singleton
-    fun provideTransferService(gson: Gson, okHttpClient: OkHttpClient) : TransferService =
         Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())

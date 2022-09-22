@@ -1,7 +1,7 @@
 package com.transfers.transfertracker.source.impl
 
 import com.transfers.transfertracker.model.teams.Team
-import com.transfers.transfertracker.network.TeamService
+import com.transfers.transfertracker.network.service.TeamService
 import com.transfers.transfertracker.network.TeamsEndpoints
 import com.transfers.transfertracker.network.TeamsEndpoints.KEY_SEASON
 import com.transfers.transfertracker.source.TeamsSource
@@ -17,14 +17,14 @@ class TeamsDataSourceImpl @Inject constructor(private val teamsService: TeamServ
         teamsMap[KEY_SEASON]= TeamsEndpoints.DEFAULT_VALUE_SEASON
     }
 
-    override fun fetchTeams(id: Int) : Single<List<Team>> =
+    override fun fetchTeams(id: String) : Single<List<Team>> =
         teamsService.fetchTeams(API_FOOTBALL_HEADER_MAP, setLeagueId(id))
             .map { data ->
                 val teams = mutableListOf<Team>()
                 for (response in data.response) {
                     val team = response.team
                     if(team != null){
-                        team.leagueId = id
+                        team.leagueId = id.toInt()
                         teams.add(team)
                     }
                     else {
@@ -34,8 +34,8 @@ class TeamsDataSourceImpl @Inject constructor(private val teamsService: TeamServ
                 return@map teams
             }
 
-    private fun setLeagueId(id: Int) : MutableMap<String, String>{
-        teamsMap[TeamsEndpoints.KEY_LEAGUE] = id.toString()
+    private fun setLeagueId(id: String) : MutableMap<String, String>{
+        teamsMap[TeamsEndpoints.KEY_LEAGUE] = id
         return teamsMap
     }
 }

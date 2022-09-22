@@ -8,8 +8,11 @@ import com.transfers.transfertracker.source.*
 import com.transfers.transfertracker.source.impl.*
 import dagger.Binds
 import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
 @Module
+@InstallIn(SingletonComponent::class)
 abstract class AppModuleBinds {
     @Binds
     abstract fun bindAuthSource(authSource: AuthSourceImpl) : AuthSource
@@ -23,8 +26,6 @@ abstract class AppModuleBinds {
     abstract fun bindSquadSource(squadSource: SquadDataSourceImpl) : SquadSource
     @Binds
     abstract fun bindTeamsSource(teamsSource: TeamsDataSourceImpl) : TeamsSource
-    @Binds
-    abstract fun bindTransferDataSource(transferDataSource: TransferDataSourceImpl) : TransferDataSource
     @Binds
     abstract fun bindUserSource(authSource: UserSourceImpl) : UserSource
     @Binds

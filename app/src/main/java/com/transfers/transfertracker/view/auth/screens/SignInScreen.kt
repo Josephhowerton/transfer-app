@@ -1,25 +1,30 @@
 package com.transfers.transfertracker.view.auth.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.transfers.transfertracker.enums.Screen
+import coil.compose.rememberAsyncImagePainter
+import com.transfers.transfertracker.R
+import com.transfers.transfertracker.enums.EScreen
+import com.transfers.transfertracker.util.state.AuthFormat
 import com.transfers.transfertracker.view.auth.viewmodel.AuthViewModel
+import com.transfers.transfertracker.view.theme.HyperLinkBlue
 import com.transfers.transfertracker.view.theme.TransferTrackerTheme
 
 @Preview(showBackground = true)
@@ -32,6 +37,26 @@ fun SignInScreenPreview() {
 fun SignInScreen(viewModel: AuthViewModel, navController: NavController) = TransferTrackerTheme {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("")}
+    var showPassword by remember { mutableStateOf(false) }
+    var transformation: VisualTransformation by remember { mutableStateOf(PasswordVisualTransformation()) }
+    var icon by remember { mutableStateOf(R.drawable.ic_baseline_visibility_off_24) }
+
+    val trailingIconView = @Composable {
+        IconButton(onClick = {
+            showPassword = !showPassword
+            if(showPassword){
+                transformation = VisualTransformation.None
+                icon = R.drawable.ic_baseline_visibility_24
+            }else{
+                transformation = PasswordVisualTransformation()
+                icon = R.drawable.ic_baseline_visibility_off_24
+            }
+        }){
+            Icon(rememberAsyncImagePainter(model = icon),
+                contentDescription = "Password Visibility",
+                tint = Color.Black)
+        }
+    }
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (titleText,
@@ -59,26 +84,28 @@ fun SignInScreen(viewModel: AuthViewModel, navController: NavController) = Trans
 
         OutlinedTextField(
             value = email,
-            onValueChange = {email = it},
+            onValueChange = {email = AuthFormat.removeWhitespace(it)},
             label = { Text("Email") },
             shape = RoundedCornerShape(50.dp),
             maxLines= 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.constrainAs(emailEditText) {
+            modifier = Modifier.padding(bottom = 5.dp, top = 5.dp).constrainAs(emailEditText) {
                 end.linkTo(parent.end)
                 start.linkTo(parent.start)
-                top.linkTo(promptText.bottom, 175.dp)
+                top.linkTo(promptText.bottom, 125.dp)
             }
         )
 
         OutlinedTextField(
             value = password,
-            onValueChange = {password = it},
+            onValueChange = {password = AuthFormat.removeWhitespace(it)},
             label = { Text("Password") },
             shape = RoundedCornerShape(50.dp),
+            visualTransformation = transformation,
+            trailingIcon = trailingIconView,
             maxLines= 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.constrainAs(passwordEditText) {
+            modifier = Modifier.padding(bottom = 5.dp, top = 5.dp).constrainAs(passwordEditText) {
                 top.linkTo(emailEditText.bottom, 15.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
@@ -87,8 +114,8 @@ fun SignInScreen(viewModel: AuthViewModel, navController: NavController) = Trans
 
         ClickableText(
             text = AnnotatedString("Forgot Password"),
-            style = TextStyle(color = Color.Blue),
-            onClick = { navController.navigate(Screen.FORGOT_PASSWORD) },
+            style = TextStyle(color = HyperLinkBlue, fontSize = 18.sp),
+            onClick = { navController.navigate(EScreen.FORGOT_PASSWORD) },
             modifier = Modifier.constrainAs(forgotPasswordText) {
                 top.linkTo(passwordEditText.bottom, 7.dp)
                 end.linkTo(passwordEditText.end)
@@ -97,7 +124,7 @@ fun SignInScreen(viewModel: AuthViewModel, navController: NavController) = Trans
 
         Button(
             shape = RoundedCornerShape(50.dp),
-            onClick = { viewModel.signIn(email, password)},
+            onClick = { viewModel.signIn(email, password) },
             enabled = viewModel.validateSignIn(email, password),
             modifier = Modifier.constrainAs(signInButton) {
                 top.linkTo(forgotPasswordText.bottom, 50.dp)
@@ -109,8 +136,8 @@ fun SignInScreen(viewModel: AuthViewModel, navController: NavController) = Trans
 
         ClickableText(
             text = AnnotatedString("Don't have an account? Start here."),
-            style = TextStyle(color = Color.Blue),
-            onClick = { navController.navigate(Screen.SIGN_UP) },
+            onClick = { navController.navigate(EScreen.SIGN_UP) },
+            style = TextStyle(color = HyperLinkBlue, fontSize = 18.sp),
             modifier = Modifier
                 .constrainAs(signUpText) {
                     bottom.linkTo(parent.bottom, margin = 25.dp)
@@ -153,8 +180,10 @@ fun SignInScreen() = TransferTrackerTheme {
         OutlinedTextField(
             value = email,
             onValueChange = {email = it},
-            shape = RoundedCornerShape(25.dp),
             label = { Text("Email") },
+            shape = RoundedCornerShape(25.dp),
+            singleLine = true,
+            maxLines = 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.constrainAs(emailEditText) {
                 end.linkTo(parent.end)
@@ -168,6 +197,8 @@ fun SignInScreen() = TransferTrackerTheme {
             onValueChange = {password = it},
             label = { Text("Password") },
             shape = RoundedCornerShape(25.dp),
+            singleLine = true,
+            maxLines = 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.constrainAs(passwordEditText) {
                 top.linkTo(emailEditText.bottom, 15.dp)

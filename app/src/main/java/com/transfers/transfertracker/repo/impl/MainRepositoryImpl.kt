@@ -7,12 +7,16 @@ import com.transfers.transfertracker.model.player.PlayerProfile
 import com.transfers.transfertracker.model.squad.SquadPlayer
 import com.transfers.transfertracker.model.stats.TeamStatistics
 import com.transfers.transfertracker.model.teams.Team
+import com.transfers.transfertracker.model.tranfers.PlayerTransfer
+import com.transfers.transfertracker.model.tranfers.Transfer
+import com.transfers.transfertracker.model.tranfers.TransferData
 import com.transfers.transfertracker.repo.MainRepository
 import com.transfers.transfertracker.source.*
 import com.transfers.transfertracker.util.result.BaseResult
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -21,16 +25,32 @@ class MainRepositoryImpl @Inject constructor(
     private val newsSource: NewsSource,
     private val squadSource: SquadSource,
     private val teamsSource: TeamsSource,
-    private val transferDataSource: TransferDataSource,
     private val userSource: UserSource,
     private val statisticsSource: StatisticsSource
 ): MainRepository {
 
+
+    init {
+        countryDataSource.getAllCountries()
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe(
+                {
+                    if (it.isEmpty()){
+                        fetchAllCountries()
+                    }
+                },
+                {
+                    fetchAllCountries()
+                }
+            )
+    }
+
+    override fun getAllCountries(): Single<List<Country>> =
+        countryDataSource.getAllCountries()
+
     override fun fetchAllCountries(): Single<List<Country>> =
         countryDataSource.fetchAllCountries()
-
-    override fun fetchAllCountriesFromApi(): Single<List<Country>> =
-        countryDataSource.fetchAllCountriesFromApi()
 
     override fun fetchCountryByCode(code: String): Single<List<Country>> =
         countryDataSource.fetchCountryByCode(code)
@@ -56,10 +76,19 @@ class MainRepositoryImpl @Inject constructor(
     override fun fetchSquad(tid: String): Single<List<SquadPlayer>> =
         squadSource.fetchSquad(tid)
 
-    override fun fetchPlayerProfiles(leagueId: String, teamId: String, playerId: String): Single<List<PlayerProfile>> =
+    override fun fetchTransfers(tid: String): Single<List<PlayerTransfer>>  =
+        squadSource.fetchTransfers(tid)
+
+    override fun fetchPlayerProfiles(leagueId: String, teamId: String): Single<List<PlayerProfile>> =
+        squadSource.fetchPlayerProfiles(leagueId, teamId)
+
+    override fun fetchPlayerProfile(leagueId: String, teamId: String, playerId: String): Single<PlayerProfile> =
         squadSource.fetchPlayerProfile(leagueId, teamId, playerId)
 
-    override fun fetchTeams(id: Int) : Single<List<Team>> =
+    override fun fetchPlayerProfile(teamId: String, playerId: String): Single<PlayerProfile> =
+        squadSource.fetchPlayerProfile(teamId, playerId)
+
+    override fun fetchTeams(id: String) : Single<List<Team>> =
         teamsSource.fetchTeams(id)
 
     override fun fetchTeamStatistics(leagueId: String, teamId: String): Single<TeamStatistics> =

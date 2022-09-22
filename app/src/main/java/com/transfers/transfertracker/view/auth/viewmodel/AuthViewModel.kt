@@ -3,22 +3,23 @@ package com.transfers.transfertracker.view.auth.viewmodel
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.transfers.transfertracker.R
+import com.transfers.transfertracker.repo.AuthRepository
+import com.transfers.transfertracker.util.SubscribeOnLifecycle
 import com.transfers.transfertracker.util.errors.AuthError
+import com.transfers.transfertracker.util.errors.AuthException
 import com.transfers.transfertracker.util.result.AuthResultError
 import com.transfers.transfertracker.util.result.AuthResultSuccess
 import com.transfers.transfertracker.util.result.BaseAuthResult
 import com.transfers.transfertracker.util.result.BaseResult
-import com.transfers.transfertracker.repo.AuthRepository
-import com.transfers.transfertracker.util.SubscribeOnLifecycle
-import com.transfers.transfertracker.util.errors.AuthException
 import com.transfers.transfertracker.view.auth.AuthSuccessUserView
 import com.transfers.transfertracker.view.auth.ResetSuccessUserView
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
+@HiltViewModel
 open class AuthViewModel @Inject constructor(private val repository: AuthRepository): ViewModel(), DefaultLifecycleObserver, SubscribeOnLifecycle{
     private lateinit var compositeDisposable: CompositeDisposable
 
@@ -29,7 +30,6 @@ open class AuthViewModel @Inject constructor(private val repository: AuthReposit
         super.onCreate(owner)
         compositeDisposable = CompositeDisposable()
     }
-
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         compositeDisposable.dispose()

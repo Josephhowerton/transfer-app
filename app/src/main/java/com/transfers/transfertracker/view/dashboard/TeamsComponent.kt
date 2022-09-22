@@ -180,7 +180,7 @@ fun TeamsComponent(viewModel: DashboardViewModel, modifier: Modifier) = Transfer
             viewModel.shouldShowAddTeamButton
         }
 
-        val currentTeamBitmap = currentTeam?.value?.logo
+        val currentTeamBitmap = currentTeam.value?.logo
         val logo = if(currentTeamBitmap.isNullOrEmpty())
             R.drawable.ic_baseline_sports_soccer_24
         else

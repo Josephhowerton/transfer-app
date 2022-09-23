@@ -235,8 +235,7 @@ fun SignAPlayer(viewModel: DashboardViewModel, modifier: Modifier) = TransferTra
                                 playerPhoto = playerPhoto,
                                 leagueId = leagueId,
                                 playerId = playerId,
-                                teamId = teamId,
-                                modifier = Modifier)
+                                teamId = teamId)
                         }
                     }
                 }

@@ -108,11 +108,9 @@ class PlayerProfileViewModel @Inject constructor(
     }
 
     fun fetchPlayerProfile(teamId: String, playerId: String) {
-        Log.println(Log.ASSERT, "Composable", "called")
         subscribeOnLifecycle(repository.fetchPlayerProfile(teamId, playerId)
             .subscribe(
                 {
-                    Log.println(Log.ASSERT, "Composable", "finished")
                     it.player?.nationality?.let { country ->
                         getPlayerCountry(country)
                     }
@@ -130,7 +128,6 @@ class PlayerProfileViewModel @Inject constructor(
                     }
                 },
                 {
-                    Log.println(Log.ASSERT, "Composable", "error")
                     shouldShowErrorDialog.value = true
                 }
             ))

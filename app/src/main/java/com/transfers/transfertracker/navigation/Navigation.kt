@@ -39,10 +39,6 @@ fun AuthNavGraph(navController: NavHostController = rememberNavController(), vie
 }
 
 @Composable
-/*
-TODO:
-  FIX NAV ARGUMENTS
- */
 fun DashboardNavGraph(navController: NavHostController = rememberNavController(),
                       navigator: Navigator, signOut: () -> Unit) {
     LaunchedEffect("navigation") {
@@ -97,15 +93,6 @@ fun DashboardNavGraph(navController: NavHostController = rememberNavController()
             NewsScreen(link = it.arguments?.getString("link")) { navController.navigateUp() }
 
         }
-//
-//        composable("${Screen.PLAYER_PROFILE}/{player}/{team}") {
-//
-//            val player = it.arguments?.getString("player")
-//            val team = it.arguments?.getString("team")
-//
-//            PlayerProfile(player, team, null) { navController.navigateUp() }
-//
-//        }
 
         composable("${EScreen.PLAYER_PROFILE}/{player}/{team}/{league}") {
 
@@ -113,7 +100,6 @@ fun DashboardNavGraph(navController: NavHostController = rememberNavController()
             val team = it.arguments?.getString("team")
             val league = it.arguments?.getString("league")
 
-            Log.println(Log.ASSERT, "Navigation", "PlayerProfile")
             PlayerProfile(player, team, league) { navController.navigateUp() }
 
         }

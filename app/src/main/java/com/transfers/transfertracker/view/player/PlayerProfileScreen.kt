@@ -331,8 +331,9 @@ private fun Player(viewModel: PlayerProfileViewModel, modifier: Modifier) = Tran
                 modifier = Modifier
                     .size(128.dp)
                     .padding(10.dp)
-                    .background(Color.DarkGray, CircleShape)
-                    .border(2.dp, Color.DarkGray, CircleShape)
+                    .clip(CircleShape)
+                    .background(LightGrey, CircleShape)
+                    .border(1.dp, LightGrey, CircleShape)
                     .constrainAs(playerImage) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)

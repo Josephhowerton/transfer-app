@@ -282,7 +282,9 @@ fun TeamLineups(viewModel: TeamProfileViewModel, modifier: Modifier) = TransferT
                     }
             )
 
-            val lineups = viewModel.teamLineups
+            val lineups = remember {
+                viewModel.teamLineups
+            }
 
             if (lineups.isEmpty()) {
                 Text(text = "Unavailable",

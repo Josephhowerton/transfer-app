@@ -3,6 +3,7 @@ package com.transfers.transfertracker.view.player
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -12,6 +13,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -93,6 +95,7 @@ fun PlayersListItem(
             contentDescription = "",
             modifier = Modifier
                 .padding(start = 5.dp)
+                .clip(CircleShape)
                 .size(36.dp)
                 .constrainAs(crest) {
                     start.linkTo(parent.start)

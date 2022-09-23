@@ -74,10 +74,10 @@ class DashboardViewModel @Inject constructor(
                 .subscribe(
                     {
                         getAllUsersTeams()
-//                        fetchTeamNews()
-//                        fetchPlayers()
+                        fetchTeamNews()
+                        fetchPlayers()
                         fetchStatistics()
-//                        fetchTransfers()
+                        fetchTransfers()
                         setTeamAsPrimary(it)
                     },
                     {}
@@ -101,10 +101,10 @@ class DashboardViewModel @Inject constructor(
         subscribeOnLifecycle(repository.updateCurrentTeam(team)
             .subscribe(
                 {
-//                    fetchTeamNews()
-//                    fetchPlayers()
+                    fetchTeamNews()
+                    fetchPlayers()
                     fetchStatistics()
-//                    fetchTransfers()
+                    fetchTransfers()
                     setTeamAsPrimary(team)
                 },
                 {}
@@ -149,13 +149,10 @@ class DashboardViewModel @Inject constructor(
             repository.getCurrentTeam()
                 .flatMap { repository.fetchTransfers(it.id.toString()) }.subscribe(
                     {
-                        if (it.isNotEmpty()) {
-                            _transferList.clear()
-                            _transferList.addAll(it)
-                        }
+                        _transferList.clear()
+                        _transferList.addAll(it)
                     },
-                    {
-                    }
+                    {}
                 )
         )
     }

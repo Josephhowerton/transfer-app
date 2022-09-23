@@ -24,6 +24,7 @@ class CountryListViewModel @Inject constructor(
 
     private val _countriesList = mutableStateListOf<Country>()
     val countriesList: List<Country> get() = _countriesList
+
     val shouldShowErrorDialog = mutableStateOf(false)
     val errorTitle = mutableStateOf(R.string.title_generic_error)
     val errorMessage = mutableStateOf(R.string.message_find_countries_error)

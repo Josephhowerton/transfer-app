@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.transfers.transfertracker.R
 import com.transfers.transfertracker.repo.AuthRepository
+import com.transfers.transfertracker.repo.MainRepository
 import com.transfers.transfertracker.util.SubscribeOnLifecycle
 import com.transfers.transfertracker.util.errors.AuthError
 import com.transfers.transfertracker.util.errors.AuthException
@@ -20,16 +21,16 @@ import io.reactivex.rxjava3.disposables.Disposable
 import javax.inject.Inject
 
 @HiltViewModel
-open class AuthViewModel @Inject constructor(private val repository: AuthRepository): ViewModel(), DefaultLifecycleObserver, SubscribeOnLifecycle{
-    private lateinit var compositeDisposable: CompositeDisposable
+open class AuthViewModel @Inject constructor(private val authRepository: AuthRepository, private val mainRepository: MainRepository): ViewModel(), DefaultLifecycleObserver, SubscribeOnLifecycle{
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private val _result = MutableLiveData<BaseAuthResult>()
     val result: LiveData<BaseAuthResult> = _result
 
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
-        compositeDisposable = CompositeDisposable()
+    init {
+        getAllCountries()
     }
+
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         compositeDisposable.dispose()
@@ -54,10 +55,10 @@ open class AuthViewModel @Inject constructor(private val repository: AuthReposit
 
     fun signIn(emailField: String, passwordField: String) {
         subscribeOnLifecycle(
-            repository.signIn(emailField, passwordField)
+            authRepository.signIn(emailField, passwordField)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError{
-                    repository.signOut()
+                    authRepository.signOut()
                 }
                 .subscribe(
                     {
@@ -76,7 +77,7 @@ open class AuthViewModel @Inject constructor(private val repository: AuthReposit
 
     fun signUp(displayNameField: String, emailField: String, passwordField: String) {
         subscribeOnLifecycle(
-            repository.signUp(displayNameField, emailField, passwordField)
+            authRepository.signUp(displayNameField, emailField, passwordField)
                 .subscribe(
                     {
                         if(it is BaseResult.Success){
@@ -91,7 +92,7 @@ open class AuthViewModel @Inject constructor(private val repository: AuthReposit
     }
 
     fun sendResetPasswordEmail(emailField: String) {
-        subscribeOnLifecycle(repository.sendPasswordResetEmail(emailField)
+        subscribeOnLifecycle(authRepository.sendPasswordResetEmail(emailField)
             .subscribe(
                 {
                     if(it is BaseResult.Success){
@@ -105,6 +106,19 @@ open class AuthViewModel @Inject constructor(private val repository: AuthReposit
                 }
             )
         )
+    }
+
+    private fun getAllCountries() {
+        subscribeOnLifecycle(mainRepository.getAllCountries()
+            .filter {
+                if(it.isEmpty()){ fetchAllCountries() }
+                it.isNotEmpty()
+            }.subscribe({}, {})
+        )
+    }
+
+    private fun fetchAllCountries() {
+        subscribeOnLifecycle(mainRepository.fetchAllCountries().subscribe({}, {}))
     }
 
     private fun handleAuthError(title: Int, baseResult: BaseResult.Error): BaseAuthResult {
